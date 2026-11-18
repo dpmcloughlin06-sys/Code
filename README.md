@@ -19,12 +19,18 @@ checked for the target.
 
 ## How it works
 
-- `Calc3Tutor/tutor.json` is the decision tree (133 screens). Each screen has a
-  title, body, optional formula, optional warning, and either choices
-  (narrowing questions), a Next button, or a finish screen.
-- The house button returns to the start; the back chevron retraces your path.
-- Root menu: **Solve a problem** (guided), **Practice exam Q1–40 map** (jump straight to the method for each question), **Jump to a topic**, **Formula
-  sheet**, **Integration toolkit**, **Final answer check**.
+Work the problem on paper with the watch beside you.
+
+1. Home has three buttons: **Practice exam question #** (pick a section, then
+   your question), **Describe my problem** (a few narrowing questions), and
+   **Reference** (formula sheet, integration toolkit, final check).
+2. Procedures are step-by-step: one step shows in large text. Do it, tap
+   **Done** (haptic click), and the next step appears. Earlier steps shrink with
+   a check mark. "Show all steps" reveals the rest at once.
+3. After the last step you get the worked example (if any) and the next choice.
+4. The house button returns home; the back chevron retraces your path.
+
+`Calc3Tutor/tutor.json` is the decision tree (139 screens, 24 step-by-step).
 
 ## Editing content
 

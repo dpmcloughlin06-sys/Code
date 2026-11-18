@@ -12,6 +12,10 @@ struct TutorNode: Codable, Identifiable {
     let title: String
     let tag: String?
     let body: String?
+    /// Numbered procedure, revealed one step at a time.
+    let steps: [String]?
+    /// Worked example shown after the last step.
+    let outro: String?
     let formula: String?
     let warn: String?
     let choices: [TutorChoice]?
@@ -46,7 +50,7 @@ final class TutorStore: ObservableObject {
         nodes[id] ?? TutorNode(
             id: id, title: "Missing screen", tag: nil,
             body: "Couldn't load '\(id)'. Make sure tutor.json is in the app target.",
-            formula: nil, warn: nil, choices: nil, next: nil, nextLabel: nil)
+            steps: nil, outro: nil, formula: nil, warn: nil, choices: nil, next: nil, nextLabel: nil)
     }
 
     func goHome() { path.removeAll() }

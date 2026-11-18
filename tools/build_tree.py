@@ -15,10 +15,40 @@ Run:  python3 tools/build_tree.py      (writes JSON and validates the graph)
 """
 import json
 import os
+import re
 import sys
 
 NODES = {}
 ORDER = []
+
+
+STEP_RE = re.compile(r"^(\d+)\.\s+")
+
+
+def split_steps(text):
+    """Numbered lines ("1. ...") become steps shown one at a time on the watch.
+    Lines after a step attach to it; lines before the first step stay as intro.
+    Fewer than two steps -> plain body."""
+    lines = text.split("\n")
+    numbered = [i for i, l in enumerate(lines) if STEP_RE.match(l)]
+    last = numbered[-1] if numbered else -1
+    intro, steps, outro = [], [], []
+    for i, line in enumerate(lines):
+        m = STEP_RE.match(line)
+        if outro:
+            outro.append(line)
+        elif m:
+            steps.append(line[m.end():])
+        elif steps and i > last and line.startswith("Ex"):
+            outro.append(line)  # worked example after the last step: shown once steps are done
+        elif steps:
+            steps[-1] += "\n" + line
+        else:
+            intro.append(line)
+    if len(steps) < 2:
+        return text, None, None
+    return ("\n".join(intro).strip("\n") or None, steps,
+            "\n".join(outro).strip("\n") or None)
 
 
 def N(id, title, tag="", body=None, formula=None, warn=None, choices=None, next=None, next_label=None):
@@ -26,7 +56,13 @@ def N(id, title, tag="", body=None, formula=None, warn=None, choices=None, next=
         raise SystemExit(f"duplicate node id: {id}")
     node = {"id": id, "title": title, "tag": tag}
     if body:
-        node["body"] = body.strip("\n")
+        intro, steps, outro = split_steps(body.strip("\n"))
+        if intro:
+            node["body"] = intro
+        if steps:
+            node["steps"] = steps
+        if outro:
+            node["outro"] = outro
     if formula:
         node["formula"] = formula.strip("\n")
     if warn:
@@ -53,13 +89,19 @@ PARAM_WARN = "Direction matters for work: start point at the lower t."
 
 # ---------------------------------------------------------------- root
 N("root", "Calc 3 Tutor", "Exam 3",
-  body="Answer a few questions and I'll walk you to the exact setup. You do the arithmetic.",
+  body="Work on paper. I'll give you one step at a time.",
   choices=[
-      ("Solve a problem", "classify"),
-      ("Practice exam Q1–40 map", "exam_map"),
-      ("Jump to a topic", "topics"),
+      ("Practice exam question #", "exam_map"),
+      ("Describe my problem", "classify"),
+      ("Reference", "reference"),
+  ])
+
+N("reference", "Reference", "Reference",
+  choices=[
       ("Formula sheet", "fs_menu"),
       ("Integration toolkit", "tk_menu"),
+      ("Choosing a method", "method_table"),
+      ("All topics", "topics"),
       ("Final answer check", "final_check"),
   ])
 
@@ -1112,8 +1154,16 @@ N("final_check", "Before you box it", "Check",
 
 
 # ---------------------------------------------------------------- added from practice exam formats
-N("exam_map", "Practice exam map", "Exam 3",
-  body="Find your question number, then follow the method.",
+N("exam_map", "Which question?", "Exam 3",
+  choices=[
+      ("Q1–11 Double integrals", "em_a"),
+      ("Q12–17 Polar & surface area", "em_b"),
+      ("Q18–24 Triple integrals", "em_c"),
+      ("Q25–33 Cylindrical & spherical", "em_d"),
+      ("Q34–40 Line ∫, Green, curl", "em_e"),
+  ])
+
+N("em_a", "Q1–11 Double integrals", "Exam 3",
   choices=[
       ("Q1–2 iterated ∫ (constant bounds)", "rect_eval"),
       ("Q3 cross-section areas, volume", "cross_section"),
@@ -1121,14 +1171,26 @@ N("exam_map", "Practice exam map", "Exam 3",
       ("Q5, Q11 reverse the order", "reverse_order"),
       ("Q6–9 Type I / Type II regions", "gen_setup"),
       ("Q10 volume under plane over region", "vol_between"),
+  ])
+
+N("em_b", "Q12–17 Polar & surface area", "Exam 3",
+  choices=[
       ("Q12 pick polar ∫ for picture", "concept_pick_region"),
       ("Q13, Q15 polar evaluate / volume", "polar_region"),
       ("Q14 area inside r = g(θ)", "polar_curve_area"),
       ("Q16 Cartesian → polar", "polar_from_cart"),
       ("Q17 surface area of a plane", "sa_plane"),
+  ])
+
+N("em_c", "Q18–24 Triple integrals", "Exam 3",
+  choices=[
       ("Q18, Q21, Q22 evaluate ∭", "triple_setup"),
       ("Q19, Q23 paraboloid x = a(y²+z²)", "cyl_other_axis"),
       ("Q20, Q24 orders of a ∭", "triple_reorder"),
+  ])
+
+N("em_d", "Q25–33 Cylindrical & spherical", "Exam 3",
+  choices=[
       ("Q25, Q28 convert a point", "point_convert"),
       ("Q26, Q29 describe a solid", "describe_solid"),
       ("Q27 cylindrical ∭", "cyl_setup"),
@@ -1136,6 +1198,10 @@ N("exam_map", "Practice exam map", "Exam 3",
       ("Q31 shell, set up spherical", "sph_shell"),
       ("Q32 spherical ∭ (first octant)", "sph_ball"),
       ("Q33 volume & centroid, cone/sphere", "solid_centroid"),
+  ])
+
+N("em_e", "Q34–40 Line ∫, Green, curl", "Exam 3",
+  choices=[
       ("Q34 ∫ f dx along x = g(y)", "dx_line"),
       ("Q35, Q37 work ∫ F·dr", "work_direct"),
       ("Q36 work + pick the figure", "concept_field_curve"),
@@ -1277,10 +1343,10 @@ def validate():
         for t in targets:
             if t not in NODES:
                 errors.append(f"{nid}: links to missing node '{t}'")
-        if not n.get("body") and not n.get("formula") and not n.get("choices"):
+        if not any(n.get(k) for k in ("body", "steps", "formula", "choices")):
             errors.append(f"{nid}: empty screen")
-        for field in ("body", "formula", "warn"):
-            text = n.get(field) or ""
+        for field in ("body", "formula", "warn", "steps", "outro"):
+            text = "\n".join(n.get(field) or []) if field == "steps" else (n.get(field) or "")
             if "*" in text or "\\" in text:
                 errors.append(f"{nid}.{field}: contains '*' or backslash")
     # reachability
@@ -1311,6 +1377,8 @@ if __name__ == "__main__":
     with open(out, "w", encoding="utf-8") as f:
         json.dump(graph, f, ensure_ascii=False, indent=1)
         f.write("\n")
+    stepped = [n for n in NODES.values() if "steps" in n]
+    print(f"{len(stepped)} screens are step-by-step")
     longest = max(NODES.values(), key=lambda n: len(n.get("body", "")))
     print(f"OK: {len(NODES)} screens, finish screens: {ends}")
     print(f"longest body: {longest['id']} ({len(longest['body'])} chars)")
