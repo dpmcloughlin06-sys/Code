@@ -266,7 +266,8 @@ enum MathInline {
 // MARK: - Atoms: the unbreakable pieces a line is built from
 
 /// Where a line may wrap before an atom: 0 = glued to the previous atom, 1 = a space
-/// (wrap only if a term is too long), 2 = a natural break (between words, or next to =, +, −, commas).
+/// (wrap only if a term is too long), 2 = a natural break (between words, next to =, +, −),
+/// 3 = the best break (after a comma).
 struct MathAtom: Identifiable {
     let id: Int
     let level: Int
@@ -289,6 +290,7 @@ enum MathAtoms {
 
         func level(startsWith first: Character?, prose: Bool, opLike: Bool) -> Int {
             guard spaced, !(atoms.isEmpty && pending == nil) else { return 0 }
+            if let c = lastChar, c == "," || c == ";" { return 3 }
             if prose || lastWasProse || opLike { return 2 }
             if let c = lastChar, breakAfter.contains(c) { return 2 }
             if let f = first, breakBefore.contains(f) { return 2 }
@@ -514,7 +516,7 @@ struct MathFlow: Layout {
             }
         }
 
-        for group in groups(0..<m.count, minLevel: 2) { place(group, splitLevel: 1) }
+        for group in groups(0..<m.count, minLevel: 3) { place(group, splitLevel: 2) }
         return rows
     }
 
@@ -527,7 +529,7 @@ struct MathFlow: Layout {
 
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
         var y = bounds.minY
-        for row in rows(maxWidth: bounds.width, subviews: subviews) {
+        for row in rows(maxWidth: proposal.width ?? bounds.width, subviews: subviews) {
             for item in row.items {
                 subviews[item.index].place(at: CGPoint(x: bounds.minX + item.x, y: y + row.ascent - item.baseline),
                                            anchor: .topLeading, proposal: .unspecified)
@@ -538,7 +540,7 @@ struct MathFlow: Layout {
 
     func explicitAlignment(of guide: VerticalAlignment, in bounds: CGRect, proposal: ProposedViewSize,
                            subviews: Subviews, cache: inout ()) -> CGFloat? {
-        let rs = rows(maxWidth: bounds.width, subviews: subviews)
+        let rs = rows(maxWidth: proposal.width ?? bounds.width, subviews: subviews)
         guard let first = rs.first else { return nil }
         if guide == .firstTextBaseline { return bounds.minY + first.ascent }
         if guide == .lastTextBaseline {
