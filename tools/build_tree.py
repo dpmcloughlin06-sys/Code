@@ -76,7 +76,7 @@ N("root", "Problem type", "Calc 3",
       ("Green's theorem", "t_green"),
       ("grad · div · curl", "t_ops"),
       ("Points & describing solids", "t_coords"),
-      ("★ Tricks & rules", "tricks"),
+      ("Tricks & rules", "tricks"),
       ("Practice exam Q1–40", "exam_map"),
   ])
 
@@ -369,7 +369,7 @@ N("t_cons", "Conservative fields", "16.3",
       "∫C ∇f·dr = f(B) − f(A)\n"
       "∮ ∇f·dr = 0"),
   body=(
-      "1. f = ∫P dx + g(y,z).\n"
+      "1. f = ∫ P dx + g(y,z).\n"
       "2. f_y = Q ⇒ g.\n"
       "3. f_z = R ⇒ h(z).\n"
       "4. Answer f(end) − f(start)."),
@@ -393,7 +393,7 @@ N("t_green", "Green's theorem", "16.4",
 N("ex_green", "Example", "16.4",
   body=(
       "∮ y² dx + 3xy dy, triangle (0,0)→(1,0)→(1,2)\n"
-      "Green: Q_x − P_y = y; ∫0→1∫0→2x y dy dx = 2/3\n"
+      "Green: Q_x − P_y = y; ∫0→1 ∫0→2x y dy dx = 2/3\n"
       "Direct: 0 + 6 − 16/3 = 2/3"))
 
 # ================================================================ 16.5
@@ -561,6 +561,29 @@ N("exam_map", "Practice exam", "Exam 3",
   ])
 
 
+# ================================================================ icons (SF Symbols)
+# Shown as a coloured badge on every button that leads to the screen.
+ICONS = {
+    "t_rect": "square.grid.2x2", "t_gen": "scribble.variable", "t_rev": "arrow.left.arrow.right",
+    "t_polar": "scope", "t_sa": "square.3.layers.3d", "t_tri": "cube", "t_cyl": "cylinder",
+    "t_sph": "globe", "t_mass": "scalemass", "t_scalar": "scribble", "t_work": "arrow.up.right",
+    "t_cons": "mountain.2", "t_green": "arrow.triangle.2.circlepath", "t_ops": "wind",
+    "t_coords": "move.3d", "tricks": "lightbulb", "exam_map": "list.number",
+    "t_polar_bounds": "circle.dashed", "t_polar_area": "circle.lefthalf.filled",
+    "t_polar_cart": "arrow.triangle.swap", "t_rev_x": "arrow.left.arrow.right",
+    "t_tri_order": "arrow.up.arrow.down", "t_cyl_x": "arrow.left.and.right",
+    "t_sph_bounds": "circle.dashed", "t_sph_conv": "cone", "t_param": "point.topleft.down.curvedto.point.bottomright.up",
+    "t_rvec": "arrow.up.forward", "t_meaning": "questionmark.circle",
+    "tr_symmetry": "rectangle.split.2x1", "tr_order": "arrow.up.arrow.down",
+    "tr_geometry": "triangle", "tr_trig": "waveform.path", "tr_usub": "arrow.2.squarepath",
+    "tr_parts": "square.split.2x1", "tr_line": "point.3.connected.trianglepath.dotted",
+    "tr_checks": "checkmark.seal",
+}
+for nid, icon in ICONS.items():
+    if nid in NODES:
+        NODES[nid]["icon"] = icon
+
+
 # ================================================================ validate + write
 def validate():
     errors = []
@@ -570,6 +593,8 @@ def validate():
                 errors.append(f"{nid}: links to missing node '{c['next']}'")
         if not any(n.get(k) for k in ("body", "steps", "formula", "choices")):
             errors.append(f"{nid}: empty screen")
+        if "icon" in n and not re.fullmatch(r"[a-z0-9.]+", n["icon"]):
+            errors.append(f"{nid}: icon must be an SF Symbol name")
         for field in ("body", "formula", "warn", "steps"):
             v = n.get(field) or ""
             text = "\n".join(v) if isinstance(v, list) else v

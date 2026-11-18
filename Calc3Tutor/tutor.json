@@ -67,7 +67,7 @@
      "next": "t_coords"
     },
     {
-     "label": "★ Tricks & rules",
+     "label": "Tricks & rules",
      "next": "tricks"
     },
     {
@@ -91,7 +91,8 @@
      "label": "Integral looks like a known solid?",
      "next": "tr_geometry"
     }
-   ]
+   ],
+   "icon": "square.grid.2x2"
   },
   {
    "id": "t_gen",
@@ -110,7 +111,8 @@
      "label": "Reverse the order",
      "next": "t_rev"
     }
-   ]
+   ],
+   "icon": "scribble.variable"
   },
   {
    "id": "t_rev",
@@ -130,7 +132,8 @@
      "label": "Example",
      "next": "ex_reverse"
     }
-   ]
+   ],
+   "icon": "arrow.left.arrow.right"
   },
   {
    "id": "ex_reverse",
@@ -162,28 +165,32 @@
      "label": "Cartesian bounds → polar",
      "next": "t_polar_cart"
     }
-   ]
+   ],
+   "icon": "scope"
   },
   {
    "id": "t_polar_bounds",
    "title": "Polar bounds",
    "tag": "15.3",
    "body": "θ goes counterclockwise; it may start negative (−π/4 → 3π/4).",
-   "formula": "Disk: 0≤r≤R, 0≤θ≤2π\nAnnulus: R₁ ≤ r ≤ R₂\nQI: 0→π/2 · upper half: 0→π\nright half: −π/2→π/2\ny = mx: θ = arctan m\n  y=x: π/4 · y=√3x: π/3 · y=x/√3: π/6\nx²+y² = 2ax: r = 2a cosθ, −π/2→π/2\nx²+y² = 2ay: r = 2a sinθ, 0→π\ny = c: r = c cscθ · x = c: r = c secθ"
+   "formula": "Disk: 0≤r≤R, 0≤θ≤2π\nAnnulus: R₁ ≤ r ≤ R₂\nQI: 0→π/2 · upper half: 0→π\nright half: −π/2→π/2\ny = mx: θ = arctan m\n  y=x: π/4 · y=√3x: π/3 · y=x/√3: π/6\nx²+y² = 2ax: r = 2a cosθ, −π/2→π/2\nx²+y² = 2ay: r = 2a sinθ, 0→π\ny = c: r = c cscθ · x = c: r = c secθ",
+   "icon": "circle.dashed"
   },
   {
    "id": "t_polar_area",
    "title": "Area inside r = g(θ)",
    "tag": "15.3",
    "body": "θ range: where the curve starts and ends in the picture.",
-   "formula": "A = ∫α→β ∫0→g(θ) r dr dθ = ∫α→β ½ g(θ)² dθ"
+   "formula": "A = ∫α→β ∫0→g(θ) r dr dθ = ∫α→β ½ g(θ)² dθ",
+   "icon": "circle.lefthalf.filled"
   },
   {
    "id": "t_polar_cart",
    "title": "Cartesian → polar",
    "tag": "15.3",
    "body": "Read the bounds as a region first, then write polar bounds.",
-   "formula": "y: 0→√(R²−x²) ⇒ upper half disk\nx: ±√(R²−y²) ⇒ full disk\ny: 0→√(2ax−x²), x: 0→2a\n  ⇒ 0≤r≤2a cosθ, 0≤θ≤π/2\n√(x²+y²) → r,  x²+y² → r²"
+   "formula": "y: 0→√(R²−x²) ⇒ upper half disk\nx: ±√(R²−y²) ⇒ full disk\ny: 0→√(2ax−x²), x: 0→2a\n  ⇒ 0≤r≤2a cosθ, 0≤θ≤π/2\n√(x²+y²) → r,  x²+y² → r²",
+   "icon": "arrow.triangle.swap"
   },
   {
    "id": "t_sa",
@@ -195,7 +202,8 @@
     "Constant radicand → factor × Area(D)."
    ],
    "formula": "z = f(x,y):\nA = ∬D √(1 + f_x² + f_y²) dA\nPlane ax+by+cz = d:\nA = (√(a²+b²+c²)/|c|)·Area(D)\nSphere z = √(a² − r²): √(…) = a/√(a² − r²)\nParaboloid z = x²+y²: √(1 + 4r²)\nParametric: A = ∬ |r_u × r_v| du dv",
-   "warn": "The 1 inside the root."
+   "warn": "The 1 inside the root.",
+   "icon": "square.3.layers.3d"
   },
   {
    "id": "t_tri",
@@ -213,7 +221,8 @@
      "label": "Change the order",
      "next": "t_tri_order"
     }
-   ]
+   ],
+   "icon": "cube"
   },
   {
    "id": "t_tri_order",
@@ -230,7 +239,8 @@
      "label": "Six orders example",
      "next": "ex_six"
     }
-   ]
+   ],
+   "icon": "arrow.up.arrow.down"
   },
   {
    "id": "ex_six",
@@ -254,14 +264,16 @@
      "label": "Axis is x or y (x = y²+z²)",
      "next": "t_cyl_x"
     }
-   ]
+   ],
+   "icon": "cylinder"
   },
   {
    "id": "t_cyl_x",
    "title": "Around the x-axis",
    "tag": "15.7",
    "body": "Integrand x stays x. Same idea for the y-axis with x, z.",
-   "formula": "x = a(y² + z²), plane x = c\ny = r cosθ, z = r sinθ\nx: ar² → c,  r: 0 → √(c/a),  θ: 0→2π\ndV = r dx dr dθ"
+   "formula": "x = a(y² + z²), plane x = c\ny = r cosθ, z = r sinθ\nx: ar² → c,  r: 0 → √(c/a),  θ: 0→2π\ndV = r dx dr dθ",
+   "icon": "arrow.left.and.right"
   },
   {
    "id": "t_sph",
@@ -283,19 +295,22 @@
      "label": "Cones & surfaces",
      "next": "t_sph_conv"
     }
-   ]
+   ],
+   "icon": "globe"
   },
   {
    "id": "t_sph_bounds",
    "title": "Spherical bounds",
    "tag": "15.8",
-   "formula": "Ball: ρ 0→R, φ 0→π, θ 0→2π\nUpper half: φ 0→π/2\nFirst octant: φ, θ both 0→π/2\nInside sphere, above cone φ₀: φ 0→φ₀\nOutside cone (z ≥ 0): φ φ₀→π/2\nShell: R₁ ≤ ρ ≤ R₂\nx²+y²+z² = 2az: ρ ≤ 2a cosφ\nBelow plane z = h: ρ ≤ h secφ\nCap above z = h: h secφ ≤ ρ ≤ R,\n  φ ≤ arccos(h/R)"
+   "formula": "Ball: ρ 0→R, φ 0→π, θ 0→2π\nUpper half: φ 0→π/2\nFirst octant: φ, θ both 0→π/2\nInside sphere, above cone φ₀: φ 0→φ₀\nOutside cone (z ≥ 0): φ φ₀→π/2\nShell: R₁ ≤ ρ ≤ R₂\nx²+y²+z² = 2az: ρ ≤ 2a cosφ\nBelow plane z = h: ρ ≤ h secφ\nCap above z = h: h secφ ≤ ρ ≤ R,\n  φ ≤ arccos(h/R)",
+   "icon": "circle.dashed"
   },
   {
    "id": "t_sph_conv",
    "title": "Cones & surfaces",
    "tag": "15.8",
-   "formula": "z = √(x²+y²): φ = π/4\nz = √3·√(x²+y²): φ = π/6\nz = √(x²+y²)/√3: φ = π/3\nz = k√(x²+y²): tanφ = 1/k\nsphere radius R: ρ = R\nplane z = h: ρ = h secφ\ncylinder x²+y² = a²: ρ = a cscφ\nxy-plane: φ = π/2"
+   "formula": "z = √(x²+y²): φ = π/4\nz = √3·√(x²+y²): φ = π/6\nz = √(x²+y²)/√3: φ = π/3\nz = k√(x²+y²): tanφ = 1/k\nsphere radius R: ρ = R\nplane z = h: ρ = h secφ\ncylinder x²+y² = a²: ρ = a cscφ\nxy-plane: φ = π/2",
+   "icon": "cone"
   },
   {
    "id": "t_mass",
@@ -317,7 +332,8 @@
      "label": "Example: cone in 2az sphere",
      "next": "ex_centroid"
     }
-   ]
+   ],
+   "icon": "scalemass"
   },
   {
    "id": "ex_centroid2",
@@ -347,14 +363,16 @@
      "label": "Parameterizations",
      "next": "t_param"
     }
-   ]
+   ],
+   "icon": "scribble"
   },
   {
    "id": "t_param",
    "title": "Parameterizations",
    "tag": "16.2",
    "body": "Piecewise path: one piece at a time, then add.",
-   "formula": "Segment A→B: r = A + t(B − A), 0≤t≤1\nCircle CCW: (a cos t, a sin t), 0→2π\nEllipse: (a cos t, b sin t)\ny = g(x): (t, g(t))\nx = g(y): (g(t), t)\nHelix: (cos t, sin t, t)"
+   "formula": "Segment A→B: r = A + t(B − A), 0≤t≤1\nCircle CCW: (a cos t, a sin t), 0→2π\nEllipse: (a cos t, b sin t)\ny = g(x): (t, g(t))\nx = g(y): (g(t), t)\nHelix: (cos t, sin t, t)",
+   "icon": "point.topleft.down.curvedto.point.bottomright.up"
   },
   {
    "id": "t_work",
@@ -375,20 +393,22 @@
      "label": "Conservative?",
      "next": "t_cons"
     }
-   ]
+   ],
+   "icon": "arrow.up.right"
   },
   {
    "id": "t_cons",
    "title": "Conservative fields",
    "tag": "16.3",
    "steps": [
-    "f = ∫P dx + g(y,z).",
+    "f = ∫ P dx + g(y,z).",
     "f_y = Q ⇒ g.",
     "f_z = R ⇒ h(z).",
     "Answer f(end) − f(start)."
    ],
    "formula": "2D: P_y = Q_x\n3D: curl F = 0\n  P_y = Q_x, P_z = R_x, Q_z = R_y\n∫C ∇f·dr = f(B) − f(A)\n∮ ∇f·dr = 0",
-   "warn": "Needs a simply connected domain (no holes)."
+   "warn": "Needs a simply connected domain (no holes).",
+   "icon": "mountain.2"
   },
   {
    "id": "t_green",
@@ -407,13 +427,14 @@
      "label": "Example both ways",
      "next": "ex_green"
     }
-   ]
+   ],
+   "icon": "arrow.triangle.2.circlepath"
   },
   {
    "id": "ex_green",
    "title": "Example",
    "tag": "16.4",
-   "body": "∮ y² dx + 3xy dy, triangle (0,0)→(1,0)→(1,2)\nGreen: Q_x − P_y = y; ∫0→1∫0→2x y dy dx = 2/3\nDirect: 0 + 6 − 16/3 = 2/3"
+   "body": "∮ y² dx + 3xy dy, triangle (0,0)→(1,0)→(1,2)\nGreen: Q_x − P_y = y; ∫0→1 ∫0→2x y dy dx = 2/3\nDirect: 0 + 6 − 16/3 = 2/3"
   },
   {
    "id": "t_ops",
@@ -430,19 +451,22 @@
      "label": "Is it meaningful?",
      "next": "t_meaning"
     }
-   ]
+   ],
+   "icon": "wind"
   },
   {
    "id": "t_rvec",
    "title": "r and r = |r|",
    "tag": "16.5",
-   "formula": "∇r = r/r\n∇×r = 0,  ∇·r = 3\n∇(1/r) = −r/r³\n∇(ln r) = r/r²\n∇g(r) = g'(r)·r/r\n∇(rⁿ) = n rⁿ⁻² r"
+   "formula": "∇r = r/r\n∇×r = 0,  ∇·r = 3\n∇(1/r) = −r/r³\n∇(ln r) = r/r²\n∇g(r) = g'(r)·r/r\n∇(rⁿ) = n rⁿ⁻² r",
+   "icon": "arrow.up.forward"
   },
   {
    "id": "t_meaning",
    "title": "Meaningful?",
    "tag": "16.5",
-   "body": "Track scalar/vector inside out.\nOK: div(grad f), curl(grad f), grad(div F), div(curl F), curl(curl F)\nNonsense: curl(div F), div(div F), grad(grad f), grad F, div f"
+   "body": "Track scalar/vector inside out.\nOK: div(grad f), curl(grad f), grad(div F), div(curl F), curl(curl F)\nNonsense: curl(div F), div(div F), grad(grad f), grad F, div f",
+   "icon": "questionmark.circle"
   },
   {
    "id": "t_coords",
@@ -450,7 +474,8 @@
    "tag": "15.7/15.8",
    "body": "Describing a solid:\nθ 0→π/2: x, y ≥ 0 · θ 0→π: y ≥ 0\nr ≤ z or φ ≤ π/2: z ≥ 0\nz = c plane · z = r cone · ρ = c sphere · φ = c cone\nxz-plane slice: θ = 0, π · yz-plane: θ = π/2",
    "formula": "Cyl (r, θ, z) → (r cosθ, r sinθ, z)\nSph (ρ, θ, φ) →\n  (ρ sinφ cosθ, ρ sinφ sinθ, ρ cosφ)\nr = √(x²+y²), tanθ = y/x\nρ = √(x²+y²+z²), cosφ = z/ρ",
-   "warn": "Spherical points are (ρ, θ, φ): θ second."
+   "warn": "Spherical points are (ρ, θ, φ): θ second.",
+   "icon": "move.3d"
   },
   {
    "id": "tricks",
@@ -489,57 +514,66 @@
      "label": "Sanity checks",
      "next": "tr_checks"
     }
-   ]
+   ],
+   "icon": "lightbulb"
   },
   {
    "id": "tr_symmetry",
    "title": "Symmetry",
    "tag": "Tricks",
-   "body": "D symmetric across the y-axis and f(−x,y) = −f(x,y) ⇒ ∬ f dA = 0.\nSame for y/x-axis, and in 3D.\n∬ x dA, ∬ xy² dA over a disk = 0.\nSolid round about z-axis ⇒ x̄ = ȳ = 0.\n∫0→2π sinθ dθ = ∫0→2π cosθ dθ = 0."
+   "body": "D symmetric across the y-axis and f(−x,y) = −f(x,y) ⇒ ∬ f dA = 0.\nSame for y/x-axis, and in 3D.\n∬ x dA, ∬ xy² dA over a disk = 0.\nSolid round about z-axis ⇒ x̄ = ȳ = 0.\n∫0→2π sinθ dθ = ∫0→2π cosθ dθ = 0.",
+   "icon": "rectangle.split.2x1"
   },
   {
    "id": "tr_order",
    "title": "Choosing the order",
    "tag": "Tricks",
-   "body": "Constant bounds + f = g(x)h(y): split into a product.\nx·e^(xy), x·cos(xy): integrate dy first (x is the chain-rule factor).\nNon-elementary inner (e^(x²), sin(y²)): reverse the order; the new inner creates the u-sub factor.\nPick the order that avoids splitting the region."
+   "body": "Constant bounds + f = g(x)h(y): split into a product.\nx·e^(xy), x·cos(xy): integrate dy first (x is the chain-rule factor).\nNon-elementary inner (e^(x²), sin(y²)): reverse the order; the new inner creates the u-sub factor.\nPick the order that avoids splitting the region.",
+   "icon": "arrow.up.arrow.down"
   },
   {
    "id": "tr_geometry",
    "title": "Known areas & volumes",
    "tag": "Tricks",
    "body": "If f ≥ 0 and the solid is a known shape, skip the integral.",
-   "formula": "Disk πR² · sector ½R²θ\nEllipse πab · triangle ½bh\nTriangle from vertices:\n  ½|x₁(y₂−y₃) + x₂(y₃−y₁) + x₃(y₁−y₂)|\nBall 4πR³/3 · hemisphere 2πR³/3\nCone πR²h/3 · cylinder πR²h\nHalf cylinder ½πR²·L\n  (∬ √(R² − x²) over full width)"
+   "formula": "Disk πR² · sector ½R²θ\nEllipse πab · triangle ½bh\nTriangle from vertices:\n  ½|x₁(y₂−y₃) + x₂(y₃−y₁) + x₃(y₁−y₂)|\nBall 4πR³/3 · hemisphere 2πR³/3\nCone πR²h/3 · cylinder πR²h\nHalf cylinder ½πR²·L\n  (∬ √(R² − x²) over full width)",
+   "icon": "triangle"
   },
   {
    "id": "tr_trig",
    "title": "Trig",
    "tag": "Tricks",
    "body": "Odd power: peel one factor, sin² = 1 − cos², u = cos.",
-   "formula": "sin²θ = (1 − cos2θ)/2\ncos²θ = (1 + cos2θ)/2\nsinθ cosθ = ½ sin2θ\n∫0→2π sin² = ∫0→2π cos² = π\n∫0→π/2 sin² = π/4\n∫0→π sinφ = 2 · ∫0→π/2 sinφ = 1\n∫0→π/4 sinφ = 1 − √2/2\n∫0→π/2 sin³φ = 2/3\nπ/6: (√3/2, ½) · π/4: (√2/2, √2/2)\nπ/3: (½, √3/2)  as (cos, sin)"
+   "formula": "sin²θ = (1 − cos2θ)/2\ncos²θ = (1 + cos2θ)/2\nsinθ cosθ = ½ sin2θ\n∫0→2π sin² = ∫0→2π cos² = π\n∫0→π/2 sin² = π/4\n∫0→π sinφ = 2 · ∫0→π/2 sinφ = 1\n∫0→π/4 sinφ = 1 − √2/2\n∫0→π/2 sin³φ = 2/3\nπ/6: (√3/2, ½) · π/4: (√2/2, √2/2)\nπ/3: (½, √3/2)  as (cos, sin)",
+   "icon": "waveform.path"
   },
   {
    "id": "tr_usub",
    "title": "u-sub patterns",
    "tag": "Tricks",
-   "formula": "∫ x e^(x²) dx = ½ e^(x²)\n∫ r e^(−r²) dr = −½ e^(−r²)\n∫ r√(1+4r²) dr = (1+4r²)^(3/2)/12\n∫ r/√(a²−r²) dr = −√(a²−r²)\n∫ cosⁿφ sinφ dφ = −cosⁿ⁺¹φ/(n+1)\n∫ ρ³ e^(ρ²) dρ: u = ρ², then parts\n∫ 1/(1+x²) = arctan x"
+   "formula": "∫ x e^(x²) dx = ½ e^(x²)\n∫ r e^(−r²) dr = −½ e^(−r²)\n∫ r√(1+4r²) dr = (1+4r²)^(3/2)/12\n∫ r/√(a²−r²) dr = −√(a²−r²)\n∫ cosⁿφ sinφ dφ = −cosⁿ⁺¹φ/(n+1)\n∫ ρ³ e^(ρ²) dρ: u = ρ², then parts\n∫ 1/(1+x²) = arctan x",
+   "icon": "arrow.2.squarepath"
   },
   {
    "id": "tr_parts",
    "title": "By parts",
    "tag": "Tricks",
-   "formula": "∫ u dv = uv − ∫ v du\nu by LIATE: Log, Inv trig, Alg, Trig, Exp\n∫ x eˣ dx = (x − 1)eˣ\n∫ x cos x dx = x sin x + cos x\n∫ x sin x dx = sin x − x cos x\n∫ ln x dx = x ln x − x"
+   "formula": "∫ u dv = uv − ∫ v du\nu by LIATE: Log, Inv trig, Alg, Trig, Exp\n∫ x eˣ dx = (x − 1)eˣ\n∫ x cos x dx = x sin x + cos x\n∫ x sin x dx = sin x − x cos x\n∫ ln x dx = x ln x − x",
+   "icon": "square.split.2x1"
   },
   {
    "id": "tr_line",
    "title": "Line integral rules",
    "tag": "Tricks",
-   "body": "Reverse path: ∫F·dr flips sign; ∫f ds doesn't.\n∫ g(x) dx alone depends only on x-endpoints.\nConservative + closed ⇒ 0.\nSpeed: circle radius a = a; segment = |B − A|.\nClosed curve, messy edges ⇒ Green.\nF mostly along motion ⇒ positive work."
+   "body": "Reverse path: ∫F·dr flips sign; ∫f ds doesn't.\n∫ g(x) dx alone depends only on x-endpoints.\nConservative + closed ⇒ 0.\nSpeed: circle radius a = a; segment = |B − A|.\nClosed curve, messy edges ⇒ Green.\nF mostly along motion ⇒ positive work.",
+   "icon": "point.3.connected.trianglepath.dotted"
   },
   {
    "id": "tr_checks",
    "title": "Sanity checks",
    "tag": "Tricks",
-   "body": "Jacobian: r (polar/cyl), ρ² sinφ (sph).\nOuter bounds are numbers; lower < upper.\nVolume, area, mass, length > 0.\nCentroid inside the solid.\nCW or reversed path ⇒ flip sign.\nRadians.\n½ for triangles."
+   "body": "Jacobian: r (polar/cyl), ρ² sinφ (sph).\nOuter bounds are numbers; lower < upper.\nVolume, area, mass, length > 0.\nCentroid inside the solid.\nCW or reversed path ⇒ flip sign.\nRadians.\n½ for triangles.",
+   "icon": "checkmark.seal"
   },
   {
    "id": "exam_map",
@@ -638,7 +672,8 @@
      "label": "Q40 ∇r, ∇(1/r), ∇ ln r",
      "next": "t_rvec"
     }
-   ]
+   ],
+   "icon": "list.number"
   }
  ]
 }

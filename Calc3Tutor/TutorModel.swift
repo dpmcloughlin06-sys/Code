@@ -16,6 +16,8 @@ struct TutorNode: Codable, Identifiable {
     let steps: [String]?
     let warn: String?
     let choices: [TutorChoice]?
+    /// SF Symbol shown on buttons that lead here.
+    let icon: String?
 
     /// A screen that is only a list of buttons (no content above them).
     var isMenu: Bool { formula == nil && body == nil && steps == nil && warn == nil }
@@ -52,7 +54,7 @@ final class TutorStore: ObservableObject {
         nodes[id] ?? TutorNode(
             id: id, title: "Missing screen", tag: nil, formula: nil,
             body: "Couldn't load '\(id)'. Make sure tutor.json is in the app target.",
-            steps: nil, warn: nil, choices: nil)
+            steps: nil, warn: nil, choices: nil, icon: nil)
     }
 
     func goHome() { path.removeAll() }

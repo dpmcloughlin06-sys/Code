@@ -94,7 +94,7 @@ jobs:
           xcrun simctl bootstatus "$UDID" -b
           xcrun simctl install "$UDID" "$APP"
           mkdir -p shots
-          for n in root t_polar t_sph_bounds t_green tr_trig exam_map; do
+          for n in root t_polar t_sph_bounds t_green t_ops tr_trig exam_map; do
             xcrun simctl terminate "$UDID" com.calc3tutor.watchkitapp 2>/dev/null || true
             xcrun simctl launch "$UDID" com.calc3tutor.watchkitapp -startNode "$n"
             sleep 6
@@ -102,7 +102,7 @@ jobs:
           done
       - name: Print screenshots into the log (base64 JPEG, for reviewers without artifact access)
         run: |
-          for n in root t_polar t_green; do
+          for n in root t_polar t_green t_ops; do
             sips -s format jpeg -s formatOptions 55 "shots/$n.png" --out "shots/$n.jpg" >/dev/null
             echo "SHOT_B64 $n $(base64 -i "shots/$n.jpg" | tr -d '\n')"
           done
