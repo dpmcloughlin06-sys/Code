@@ -1,9 +1,8 @@
 # Calc3 Tutor (Apple Watch)
 
-A watch-only SwiftUI app that walks you through MATH 2630 Exam 3 problems
-(15.1–15.3, 15.5–15.8, 16.2–16.5). It asks short questions to narrow down the
-problem type, then gives the exact setup: bounds, Jacobian, formula, steps,
-the common mistake to avoid, and a worked example. You do the arithmetic.
+A watch-only SwiftUI quick reference for MATH 2630 Exam 3 (15.1–15.3,
+15.5–15.8, 16.2–16.5). Pick a problem type, get every equation for it plus a
+short process. A separate **Tricks & rules** menu holds shortcuts.
 
 ## Run it
 
@@ -19,18 +18,16 @@ checked for the target.
 
 ## How it works
 
-Work the problem on paper with the watch beside you.
+- Opens on **Problem type**: 15 types, then **★ Tricks & rules** and a
+  **Practice exam Q1–40** map at the bottom.
+- Each type screen: equations (blue box), a 2–4 line process, the one
+  mistake to avoid, and submenus (bounds tables, conversions, examples).
+- Tricks & rules: symmetry, choosing/swapping order, known areas & volumes,
+  trig identities & values, u-sub patterns, by parts, line integral rules,
+  sanity checks.
+- The house button returns to Problem type.
 
-1. Home has three buttons: **Practice exam question #** (pick a section, then
-   your question), **Describe my problem** (a few narrowing questions), and
-   **Reference** (formula sheet, integration toolkit, final check).
-2. Procedures are step-by-step: one step shows in large text. Do it, tap
-   **Done** (haptic click), and the next step appears. Earlier steps shrink with
-   a check mark. "Show all steps" reveals the rest at once.
-3. After the last step you get the worked example (if any) and the next choice.
-4. The house button returns home; the back chevron retraces your path.
-
-`Calc3Tutor/tutor.json` is the decision tree (139 screens, 24 step-by-step).
+`Calc3Tutor/tutor.json` holds the 41 screens.
 
 ## Editing content
 
@@ -38,5 +35,5 @@ Don't edit `tutor.json` by hand. Edit `tools/build_tree.py`, then:
 
 ```sh
 python3 tools/build_tree.py        # rebuilds tutor.json; fails on broken links / unreachable screens
-python3 tools/verify_examples.py   # checks every worked example with SymPy (pip install sympy)
+python3 tools/verify_examples.py   # checks examples and formulas with SymPy (pip install sympy)
 ```
