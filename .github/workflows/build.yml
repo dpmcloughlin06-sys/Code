@@ -100,24 +100,12 @@ jobs:
             sleep 6
             xcrun simctl io "$UDID" screenshot "shots/$n.png"
           done
-      - name: Print a contact sheet into the log (base64 PNG, for reviewers without artifact access)
+      - name: Print screenshots into the log (base64 JPEG, for reviewers without artifact access)
         run: |
-          python3 -m pip install --quiet pillow
-          python3 - <<'PY'
-          import base64, io, glob
-          from PIL import Image
-          names = ["root", "t_polar", "t_green", "tr_trig"]
-          imgs = [Image.open(f"shots/{n}.png").convert("RGB") for n in names]
-          w, h = imgs[0].size
-          sheet = Image.new("RGB", (w * 2, h * 2), "white")
-          for i, im in enumerate(imgs):
-              sheet.paste(im, ((i % 2) * w, (i // 2) * h))
-          sheet = sheet.quantize(colors=48)
-          buf = io.BytesIO()
-          sheet.save(buf, "PNG", optimize=True)
-          print("SHEET_SIZE", sheet.size, len(buf.getvalue()))
-          print("SHEET_B64 " + base64.b64encode(buf.getvalue()).decode())
-          PY
+          for n in root t_polar t_green; do
+            sips -s format jpeg -s formatOptions 55 "shots/$n.png" --out "shots/$n.jpg" >/dev/null
+            echo "SHOT_B64 $n $(base64 -i "shots/$n.jpg" | tr -d '\n')"
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
