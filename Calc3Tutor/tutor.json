@@ -1,0 +1,1638 @@
+{
+ "root": "root",
+ "nodes": [
+  {
+   "id": "root",
+   "title": "Calc 3 Tutor",
+   "tag": "Exam 3",
+   "body": "Answer a few questions and I'll walk you to the exact setup. You do the arithmetic.",
+   "choices": [
+    {
+     "label": "Solve a problem",
+     "next": "classify"
+    },
+    {
+     "label": "Jump to a topic",
+     "next": "topics"
+    },
+    {
+     "label": "Formula sheet",
+     "next": "fs_menu"
+    },
+    {
+     "label": "Integration toolkit",
+     "next": "tk_menu"
+    },
+    {
+     "label": "Final answer check",
+     "next": "final_check"
+    }
+   ]
+  },
+  {
+   "id": "topics",
+   "title": "Topics",
+   "tag": "Index",
+   "choices": [
+    {
+     "label": "15.1 Rectangles",
+     "next": "rect_eval"
+    },
+    {
+     "label": "15.2 General regions",
+     "next": "gen_setup"
+    },
+    {
+     "label": "15.2 Reverse order",
+     "next": "reverse_order"
+    },
+    {
+     "label": "15.3 Polar",
+     "next": "polar_region"
+    },
+    {
+     "label": "15.5 Surface area",
+     "next": "sa_start"
+    },
+    {
+     "label": "15.6 Triple integrals",
+     "next": "triple_setup"
+    },
+    {
+     "label": "15.6 Change order (3D)",
+     "next": "triple_reorder"
+    },
+    {
+     "label": "15.7 Cylindrical",
+     "next": "cyl_setup"
+    },
+    {
+     "label": "15.8 Spherical",
+     "next": "sph_region"
+    },
+    {
+     "label": "Mass & centroid",
+     "next": "mass_menu"
+    },
+    {
+     "label": "16.2 Scalar line ∫ f ds",
+     "next": "scalar_line"
+    },
+    {
+     "label": "16.2 Work ∫ F·dr",
+     "next": "work_start"
+    },
+    {
+     "label": "Conservative / potential",
+     "next": "cons_start"
+    },
+    {
+     "label": "16.4 Green's theorem",
+     "next": "green_start"
+    },
+    {
+     "label": "16.5 grad/div/curl",
+     "next": "ops_start"
+    },
+    {
+     "label": "Concept & graph Qs",
+     "next": "concept_start"
+    }
+   ]
+  },
+  {
+   "id": "classify",
+   "title": "What do you see?",
+   "tag": "Start",
+   "body": "Pick what best matches the problem statement.",
+   "choices": [
+    {
+     "label": "An integral is already written with bounds",
+     "next": "given_n"
+    },
+    {
+     "label": "A region or solid: find area, volume, mass, centroid, average",
+     "next": "region_dim"
+    },
+    {
+     "label": "A surface: find its surface area",
+     "next": "sa_start"
+    },
+    {
+     "label": "A curve/path: ∫ f ds, work, wire mass, ∫F·dr",
+     "next": "line_start"
+    },
+    {
+     "label": "A closed curve in the plane (∮)",
+     "next": "green_start"
+    },
+    {
+     "label": "Is F conservative? Find a potential f",
+     "next": "cons_start"
+    },
+    {
+     "label": "grad, div, curl, Laplacian",
+     "next": "ops_start"
+    },
+    {
+     "label": "Concept / pick-the-graph / which integral",
+     "next": "concept_start"
+    },
+    {
+     "label": "Not sure which method",
+     "next": "method_table"
+    }
+   ]
+  },
+  {
+   "id": "method_table",
+   "title": "Choosing a method",
+   "tag": "Strategy",
+   "body": "Rectangle in 2D → Cartesian ∬\nCurves/lines bound region → Type I / II\nInner antiderivative impossible (e^(x²), sin(y²)) → reverse order\nCircle, disk, ring, x²+y² → polar\nSurface z=f(x,y), 'area of the part of' → surface area\nBox, planes, tetrahedron → Cartesian ∭\nCylinder/paraboloid around z-axis → cylindrical\nSphere, ball, cone + sphere, x²+y²+z² → spherical\nWire density, ds, arc length → scalar line ∫\nForce, work, F·dr, P dx + Q dy → vector line ∫\nEndpoints only matter / P_y = Q_x → potential function\nClosed plane curve → Green\nSpreading out → div;  spinning → curl",
+   "next": "classify",
+   "nextLabel": "Back to start"
+  },
+  {
+   "id": "given_n",
+   "title": "How many ∫ signs?",
+   "tag": "Given ∫",
+   "choices": [
+    {
+     "label": "Two (∬, dA, dx dy)",
+     "next": "given2"
+    },
+    {
+     "label": "Three (∭, dV)",
+     "next": "given3"
+    }
+   ]
+  },
+  {
+   "id": "given2",
+   "title": "What is asked?",
+   "tag": "Given ∬",
+   "choices": [
+    {
+     "label": "Evaluate it",
+     "next": "given2_eval"
+    },
+    {
+     "label": "Reverse / change the order",
+     "next": "reverse_order"
+    },
+    {
+     "label": "Convert to polar",
+     "next": "polar_from_cart"
+    },
+    {
+     "label": "Sketch / identify the region",
+     "next": "read_bounds"
+    }
+   ]
+  },
+  {
+   "id": "given2_eval",
+   "title": "Look at the bounds",
+   "tag": "Given ∬",
+   "body": "Are all four bounds numbers (constants)?",
+   "choices": [
+    {
+     "label": "Yes, all constants",
+     "next": "rect_eval"
+    },
+    {
+     "label": "No, inner bounds have x or y",
+     "next": "given2_inner"
+    }
+   ]
+  },
+  {
+   "id": "given2_inner",
+   "title": "Can you do the inner integral?",
+   "tag": "Given ∬",
+   "body": "Try the inner antiderivative in your head. Red flags: e^(x²), e^(y²), sin(x²), cos(y³), √(1+x³), e^(x/y) integrated in the wrong variable.",
+   "choices": [
+    {
+     "label": "Yes, looks doable",
+     "next": "eval_iter"
+    },
+    {
+     "label": "No / it's a red-flag function",
+     "next": "reverse_order"
+    },
+    {
+     "label": "Integrand has x²+y² and bounds look circular",
+     "next": "polar_from_cart"
+    }
+   ]
+  },
+  {
+   "id": "given3",
+   "title": "What is asked?",
+   "tag": "Given ∭",
+   "choices": [
+    {
+     "label": "Evaluate it",
+     "next": "triple_eval"
+    },
+    {
+     "label": "Rewrite in another order",
+     "next": "triple_reorder"
+    },
+    {
+     "label": "Convert to cylindrical",
+     "next": "cyl_from_cart"
+    },
+    {
+     "label": "Convert to spherical",
+     "next": "sph_from_cart"
+    },
+    {
+     "label": "Identify the solid",
+     "next": "read_bounds3"
+    }
+   ]
+  },
+  {
+   "id": "read_bounds",
+   "title": "Read bounds → region",
+   "tag": "15.2",
+   "body": "1. Turn bounds into inequalities. Outer bounds are numbers; inner bounds are curves.\nEx: ∫0→1 ∫(x²)→(√x) dy dx  ⇒  0≤x≤1, x²≤y≤√x.\n2. Draw the inner curves (y=x², y=√x) and the outer lines (x=0, x=1).\n3. Shade between the inner curves, only for x in the outer range.\n4. Test a point: pick x in the middle, check lower curve < upper curve there.",
+   "warn": "Outer bounds are always constants. If inner bounds depend on x, the outer variable is x.",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "read_bounds3",
+   "title": "Read bounds → solid",
+   "tag": "15.6",
+   "body": "1. Write all 6 inequalities, innermost first.\n2. Innermost pair = bottom & top surfaces (e.g. z from 0 to 4−x²−y² ⇒ under a paraboloid, above z=0).\n3. Outer two pairs = the shadow region in the plane of the other two variables. Sketch it.\n4. Stack: shadow on the floor, surfaces as floor and ceiling.\nRecognize: x²+y² terms → round (paraboloid, cone, cylinder); linear → planes; √(a²−x²−y²) → sphere.",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "rect_eval",
+   "title": "Rectangle ∬",
+   "tag": "15.1",
+   "body": "R = [a,b]×[c,d]. Either order works (Fubini).\nArea = ∬1 dA; volume under z=f≥0 = ∬f dA; average = (1/Area)∬f dA.\nPick the order that makes the inner integral easy.",
+   "formula": "∬R f dA = ∫a→b ∫c→d f(x,y) dy dx",
+   "choices": [
+    {
+     "label": "f = g(x)·h(y) (splits)",
+     "next": "rect_product"
+    },
+    {
+     "label": "Has x·e^(xy), x·cos(xy), etc.",
+     "next": "rect_order"
+    },
+    {
+     "label": "Plain polynomial / other",
+     "next": "eval_iter"
+    }
+   ]
+  },
+  {
+   "id": "rect_product",
+   "title": "Product shortcut",
+   "tag": "15.1",
+   "body": "Constant bounds and f = g(x)h(y) ⇒ multiply two single integrals.\nEx: ∬ x·e^y over [0,2]×[0,1] = (∫0→2 x dx)(∫0→1 e^y dy) = 2(e−1).",
+   "formula": "∫a→b∫c→d g(x)h(y) dy dx = (∫a→b g dx)(∫c→d h dy)",
+   "next": "final_check",
+   "nextLabel": "Check answer"
+  },
+  {
+   "id": "rect_order",
+   "title": "Choose the order",
+   "tag": "15.1",
+   "body": "If the integrand is x·e^(xy): integrate dy FIRST. The x outside is exactly the chain-rule factor:\n∫ x·e^(xy) dy = e^(xy).\nSame for x·cos(xy) → sin(xy). For y·e^(xy) or y·cos(xy), do dx first, since d/dx(xy) = y.\nRule: inner variable = the one whose coefficient sits outside the composite.",
+   "next": "eval_iter"
+  },
+  {
+   "id": "eval_iter",
+   "title": "Evaluate iterated ∫",
+   "tag": "Evaluate",
+   "body": "1. Inner integral: integrate in the inner variable only. Every other letter is a constant.\n2. Plug in inner bounds: (upper) − (lower). Bounds may be functions; substitute them fully.\n3. Simplify to a single-variable expression.\n4. Outer integral, plug bounds, subtract.\nNeed an antiderivative trick? See the Integration toolkit.",
+   "warn": "Don't drop a term when plugging in bounds. Write (upper) − (lower) with parentheses.",
+   "choices": [
+    {
+     "label": "Integration toolkit",
+     "next": "tk_menu"
+    },
+    {
+     "label": "I'm done → check",
+     "next": "final_check"
+    }
+   ]
+  },
+  {
+   "id": "region_dim",
+   "title": "2D or 3D?",
+   "tag": "Setup",
+   "choices": [
+    {
+     "label": "2D region in the plane (∬)",
+     "next": "q2_quantity"
+    },
+    {
+     "label": "Volume under/between surfaces z=…",
+     "next": "vol_between"
+    },
+    {
+     "label": "3D solid (∭)",
+     "next": "q3_quantity"
+    }
+   ]
+  },
+  {
+   "id": "vol_between",
+   "title": "Volume between surfaces",
+   "tag": "15.2/15.3",
+   "body": "Volume = ∬D (top − bottom) dA.\n1. Identify top surface and bottom surface (bottom may be z=0).\n2. D = shadow on xy-plane. Edge of shadow: where top = bottom, or given walls.\n3. Choose coordinates for D.",
+   "formula": "V = ∬D [z_top − z_bottom] dA",
+   "warn": "Check which surface is on top by testing a point inside D.",
+   "next": "shape2d",
+   "nextLabel": "Describe D"
+  },
+  {
+   "id": "q2_quantity",
+   "title": "What quantity?",
+   "tag": "Setup",
+   "choices": [
+    {
+     "label": "Area of region",
+     "next": "q2_area"
+    },
+    {
+     "label": "Volume under z = f(x,y)",
+     "next": "q2_vol"
+    },
+    {
+     "label": "Mass (density δ given)",
+     "next": "q2_mass"
+    },
+    {
+     "label": "Centroid / center of mass",
+     "next": "lamina_centroid"
+    },
+    {
+     "label": "Average value of f",
+     "next": "q2_avg"
+    },
+    {
+     "label": "Just ∬ f dA",
+     "next": "shape2d"
+    }
+   ]
+  },
+  {
+   "id": "q2_area",
+   "title": "Area",
+   "tag": "Setup",
+   "body": "Integrand = 1.",
+   "formula": "A = ∬D 1 dA",
+   "next": "shape2d",
+   "nextLabel": "Describe D"
+  },
+  {
+   "id": "q2_vol",
+   "title": "Volume",
+   "tag": "Setup",
+   "body": "Integrand = f(x,y) (height). If between two surfaces, use top − bottom.",
+   "formula": "V = ∬D f(x,y) dA",
+   "next": "shape2d",
+   "nextLabel": "Describe D"
+  },
+  {
+   "id": "q2_mass",
+   "title": "Mass",
+   "tag": "Setup",
+   "body": "Integrand = density δ(x,y).",
+   "formula": "m = ∬D δ(x,y) dA",
+   "next": "shape2d",
+   "nextLabel": "Describe D"
+  },
+  {
+   "id": "q2_avg",
+   "title": "Average value",
+   "tag": "Setup",
+   "body": "Compute ∬f dA and the area of D, then divide.",
+   "formula": "f_avg = (1/Area(D)) ∬D f dA",
+   "next": "shape2d",
+   "nextLabel": "Describe D"
+  },
+  {
+   "id": "shape2d",
+   "title": "Shape of D?",
+   "tag": "Setup",
+   "choices": [
+    {
+     "label": "Rectangle (constant bounds)",
+     "next": "rect_eval"
+    },
+    {
+     "label": "Bounded by curves / lines / triangle",
+     "next": "gen_setup"
+    },
+    {
+     "label": "Disk, sector, ring, centered at origin",
+     "next": "polar_region"
+    },
+    {
+     "label": "Circle through the origin (x²+y²=2ay)",
+     "next": "polar_offcenter"
+    }
+   ]
+  },
+  {
+   "id": "gen_setup",
+   "title": "General region",
+   "tag": "15.2",
+   "body": "1. Sketch every boundary curve.\n2. Find intersection points: set the curves equal and solve.\n3. Draw a vertical line through D: does it always enter through the same curve and leave through the same curve? Then Type I works.\n4. Draw a horizontal line: same test for Type II.",
+   "choices": [
+    {
+     "label": "Vertical line test passes (Type I, dy dx)",
+     "next": "type1"
+    },
+    {
+     "label": "Horizontal line test passes (Type II, dx dy)",
+     "next": "type2"
+    },
+    {
+     "label": "Neither passes cleanly",
+     "next": "split_region"
+    },
+    {
+     "label": "Triangle from vertices",
+     "next": "triangle_region"
+    }
+   ]
+  },
+  {
+   "id": "type1",
+   "title": "Type I: dy dx",
+   "tag": "15.2",
+   "body": "x runs from leftmost to rightmost point of D (numbers, often intersection x-values).\ny runs from bottom curve to top curve, both written as y = (in x).\nCheck: at a middle x, bottom value < top value.",
+   "formula": "∫a→b ∫g1(x)→g2(x) f dy dx",
+   "next": "eval_iter"
+  },
+  {
+   "id": "type2",
+   "title": "Type II: dx dy",
+   "tag": "15.2",
+   "body": "y runs from lowest to highest point of D (numbers).\nSolve each boundary for x. x runs from left curve to right curve.\nSquare roots: x = +√y on the right half, −√y on the left.",
+   "formula": "∫c→d ∫h1(y)→h2(y) f dx dy",
+   "next": "eval_iter"
+  },
+  {
+   "id": "split_region",
+   "title": "Split the region",
+   "tag": "15.2",
+   "body": "Find where the entering (or exiting) curve changes; that's at a corner/intersection.\nDraw a line there to cut D into pieces that each pass the test.\nSet up each piece separately and ADD the integrals.\nOften the other order avoids splitting, so try it first.",
+   "next": "eval_iter"
+  },
+  {
+   "id": "triangle_region",
+   "title": "Triangle region",
+   "tag": "15.2",
+   "body": "1. Plot the 3 vertices.\n2. Line through (x1,y1),(x2,y2): slope m = (y2−y1)/(x2−x1), then y = y1 + m(x − x1). Solve for x instead if doing dx first.\n3. Pick the order where one side is the bottom (or left) and one side is the top (or right). Otherwise split at the middle vertex.\nArea check: ½·base·height.",
+   "warn": "Area of a triangle is ½bh, not bh.",
+   "choices": [
+    {
+     "label": "Type I (dy dx)",
+     "next": "type1"
+    },
+    {
+     "label": "Type II (dx dy)",
+     "next": "type2"
+    }
+   ]
+  },
+  {
+   "id": "reverse_order",
+   "title": "Reverse the order",
+   "tag": "15.2",
+   "body": "1. Write bounds as inequalities.\n2. Sketch: inner curves + outer lines; shade.\n3. Label every corner (solve intersections).\n4. New OUTER variable: its min and max over the whole region (numbers).\n5. Solve each boundary curve for the new INNER variable.\n6. Draw a line in the new direction: inner bound = curve you enter → curve you exit.\n7. If the entering/exiting curve changes, split.",
+   "warn": "Never just swap dx and dy. The region stays the same; the bounds change.",
+   "next": "reverse_example",
+   "nextLabel": "See an example"
+  },
+  {
+   "id": "reverse_example",
+   "title": "Example",
+   "tag": "15.2",
+   "body": "∫0→1 ∫y→1 e^(x²) dx dy  (can't integrate e^(x²) dx)\nRegion: 0≤y≤1, y≤x≤1. Triangle with corners (0,0),(1,0),(1,1).\nNew outer: x from 0 to 1. Vertical line at x: y from 0 up to y = x.\n= ∫0→1 ∫0→x e^(x²) dy dx = ∫0→1 x·e^(x²) dx\nu = x²: = ½(e − 1).\nNotice the new inner integral created the factor x that u-sub needs.",
+   "next": "eval_iter"
+  },
+  {
+   "id": "polar_region",
+   "title": "Polar: describe D",
+   "tag": "15.3",
+   "body": "x = r cosθ, y = r sinθ, x²+y² = r², dA = r dr dθ.",
+   "choices": [
+    {
+     "label": "Full disk radius R",
+     "next": "polar_disk"
+    },
+    {
+     "label": "Part of a disk (half, quadrant, wedge)",
+     "next": "polar_angles"
+    },
+    {
+     "label": "Ring between two circles",
+     "next": "polar_ring"
+    },
+    {
+     "label": "Circle through origin (x²+y²=2ax or 2ay)",
+     "next": "polar_offcenter"
+    },
+    {
+     "label": "Bounded by a line like y=c or x=c",
+     "next": "polar_line"
+    }
+   ]
+  },
+  {
+   "id": "polar_disk",
+   "title": "Full disk",
+   "tag": "15.3",
+   "body": "x²+y² ≤ R² ⇒ r goes to R (not R²).",
+   "formula": "0 ≤ r ≤ R,  0 ≤ θ ≤ 2π",
+   "next": "polar_convert"
+  },
+  {
+   "id": "polar_angles",
+   "title": "Angle bounds",
+   "tag": "15.3",
+   "body": "Quadrant I: 0→π/2   II: π/2→π\nUpper half (y≥0): 0→π\nRight half (x≥0): −π/2→π/2\nLeft half: π/2→3π/2   Lower: π→2π\nLine y = x (QI): θ = π/4\ny = √3·x: θ = π/3;  y = x/√3: θ = π/6\ny-axis: θ = π/2. General line y = mx: θ = arctan(m).\nGo counterclockwise: smaller angle is lower bound.",
+   "next": "polar_convert"
+  },
+  {
+   "id": "polar_ring",
+   "title": "Annulus",
+   "tag": "15.3",
+   "body": "Inner circle radius R1, outer circle radius R2.",
+   "formula": "R1 ≤ r ≤ R2,  θ as needed",
+   "next": "polar_convert"
+  },
+  {
+   "id": "polar_offcenter",
+   "title": "Circle through origin",
+   "tag": "15.3",
+   "body": "Substitute r² for x²+y², r sinθ for y, r cosθ for x, cancel one r.\nx²+y² = 2ay ⇒ r = 2a sinθ, θ from 0 to π (circle above x-axis).\nx²+y² = 2ax ⇒ r = 2a cosθ, θ from −π/2 to π/2.\nr goes from 0 to that curve.",
+   "formula": "0 ≤ r ≤ 2a sinθ, 0 ≤ θ ≤ π",
+   "warn": "If the problem gives (x−a)²+y² = a², expand it first: x²+y² = 2ax.",
+   "next": "polar_convert"
+  },
+  {
+   "id": "polar_line",
+   "title": "Line boundary",
+   "tag": "15.3",
+   "body": "y = c ⇒ r sinθ = c ⇒ r = c/sinθ = c·cscθ.\nx = c ⇒ r = c·secθ.\nEx: inside x²+y²=4, above y=1: r from cscθ to 2.\nθ where they meet: 2 sinθ = 1 ⇒ θ = π/6 to 5π/6.",
+   "next": "polar_convert"
+  },
+  {
+   "id": "polar_from_cart",
+   "title": "Cartesian → polar",
+   "tag": "15.3",
+   "body": "1. Read the bounds as a region (sketch).\nClues: y from 0 to √(R²−x²) ⇒ upper half disk radius R.\nx from −√(R²−y²) to √(R²−y²) ⇒ full width of a disk.\ny from x to √(2−x²) ⇒ wedge between line y=x and circle r=√2.\n2. Write polar bounds for that region.",
+   "choices": [
+    {
+     "label": "Write the polar bounds",
+     "next": "polar_region"
+    },
+    {
+     "label": "Bounds done, convert integrand",
+     "next": "polar_convert"
+    }
+   ]
+  },
+  {
+   "id": "polar_convert",
+   "title": "Convert & integrate",
+   "tag": "15.3",
+   "body": "1. Replace x = r cosθ, y = r sinθ, x²+y² = r².\n2. Multiply by the Jacobian r.\n3. Usually integrate dr first, then dθ.\n4. If integrand = g(r)h(θ) and bounds are constants, split into a product.\nEx: ∬(x²+y²) dA → ∫∫ r²·r dr dθ = ∫∫ r³ dr dθ.\nEx: e^(−(x²+y²)) → e^(−r²)·r, u = r².",
+   "formula": "∬D f dA = ∫α→β ∫ r1→r2 f(r cosθ, r sinθ) r dr dθ",
+   "warn": "Forgetting the extra r is the #1 polar mistake. Use radians.",
+   "choices": [
+    {
+     "label": "Integration toolkit (sin², cos²…)",
+     "next": "tk_trig"
+    },
+    {
+     "label": "Done → check",
+     "next": "final_check"
+    }
+   ]
+  },
+  {
+   "id": "sa_start",
+   "title": "How is the surface given?",
+   "tag": "15.5",
+   "choices": [
+    {
+     "label": "z = f(x,y)",
+     "next": "sa_graph"
+    },
+    {
+     "label": "A plane ax+by+cz=d",
+     "next": "sa_plane"
+    },
+    {
+     "label": "Part of a sphere",
+     "next": "sa_sphere"
+    },
+    {
+     "label": "Parametric r(u,v)",
+     "next": "sa_param"
+    }
+   ]
+  },
+  {
+   "id": "sa_graph",
+   "title": "Surface area, z = f(x,y)",
+   "tag": "15.5",
+   "body": "1. Compute f_x and f_y.\n2. Integrand √(1 + f_x² + f_y²).\n3. D = shadow in the xy-plane: 'part of z=f above region D' or 'below z=h' ⇒ f(x,y) ≤ h.\n4. Choose coordinates for D.",
+   "formula": "A = ∬D √(1 + f_x² + f_y²) dA",
+   "warn": "Don't forget the 1 inside the root. You integrate the stretch factor, not f.",
+   "choices": [
+    {
+     "label": "Radicand has x²+y² / D is a disk",
+     "next": "sa_polar"
+    },
+    {
+     "label": "Radicand is a constant",
+     "next": "sa_const"
+    },
+    {
+     "label": "Radicand has one variable only",
+     "next": "sa_onevar"
+    }
+   ]
+  },
+  {
+   "id": "sa_polar",
+   "title": "Use polar",
+   "tag": "15.5",
+   "body": "Ex: z = x²+y² below z = 4.\nf_x=2x, f_y=2y ⇒ √(1+4x²+4y²) = √(1+4r²).\nD: r ≤ 2.\nA = ∫0→2π ∫0→2 √(1+4r²)·r dr dθ\nu = 1+4r², du = 8r dr\n= 2π·(1/12)[(1+4r²)^(3/2)]0→2 = (π/6)(17^(3/2) − 1).",
+   "warn": "Still need the polar r. It's what makes the u-sub work.",
+   "next": "final_check",
+   "nextLabel": "Check answer"
+  },
+  {
+   "id": "sa_const",
+   "title": "Constant factor",
+   "tag": "15.5",
+   "body": "If √(1+f_x²+f_y²) = k is constant, A = k · Area(D).\nEx: z = 2x+3y ⇒ k = √(1+4+9) = √14.",
+   "formula": "A = k · Area(D)",
+   "next": "final_check",
+   "nextLabel": "Check answer"
+  },
+  {
+   "id": "sa_onevar",
+   "title": "One-variable radicand",
+   "tag": "15.5",
+   "body": "Ex: z = y² ⇒ √(1+4y²); z = x^(3/2) ⇒ √(1 + 9x/4).\nIntegrate the OTHER variable first (it's just length of D in that direction), so the inner gives a factor that helps the u-sub.\nIf D is a triangle with y-dependent bounds, choose the order so the outer variable matches the radicand.",
+   "next": "eval_iter"
+  },
+  {
+   "id": "sa_plane",
+   "title": "Part of a plane",
+   "tag": "15.5",
+   "body": "Solve for z, or use the shortcut. D is the shadow on the xy-plane (e.g. first octant ⇒ triangle cut by z=0: ax+by=d).",
+   "formula": "A = (√(a²+b²+c²)/|c|) · Area(D)",
+   "next": "final_check",
+   "nextLabel": "Check answer"
+  },
+  {
+   "id": "sa_sphere",
+   "title": "Part of a sphere",
+   "tag": "15.5",
+   "body": "z = √(a²−x²−y²) ⇒ √(1+f_x²+f_y²) = a/√(a²−r²).\nA = ∫∫ a/√(a²−r²) · r dr dθ. u = a² − r².\nShadow D: where the sphere meets the other surface (set equal, solve for r).",
+   "next": "final_check",
+   "nextLabel": "Check answer"
+  },
+  {
+   "id": "sa_param",
+   "title": "Parametric surface",
+   "tag": "15.5",
+   "body": "Compute r_u, r_v, their cross product, and its length.",
+   "formula": "A = ∬D |r_u × r_v| du dv",
+   "next": "final_check",
+   "nextLabel": "Check answer"
+  },
+  {
+   "id": "q3_quantity",
+   "title": "What quantity?",
+   "tag": "Setup",
+   "choices": [
+    {
+     "label": "Volume",
+     "next": "q3_vol"
+    },
+    {
+     "label": "Mass (density δ)",
+     "next": "q3_mass"
+    },
+    {
+     "label": "Centroid / center of mass",
+     "next": "solid_centroid"
+    },
+    {
+     "label": "Just ∭ f dV",
+     "next": "shape3d"
+    }
+   ]
+  },
+  {
+   "id": "q3_vol",
+   "title": "Volume",
+   "tag": "Setup",
+   "formula": "V = ∭E 1 dV",
+   "next": "shape3d",
+   "nextLabel": "Describe solid"
+  },
+  {
+   "id": "q3_mass",
+   "title": "Mass",
+   "tag": "Setup",
+   "formula": "m = ∭E δ dV",
+   "next": "shape3d",
+   "nextLabel": "Describe solid"
+  },
+  {
+   "id": "shape3d",
+   "title": "What does the solid look like?",
+   "tag": "Setup",
+   "choices": [
+    {
+     "label": "Box, planes, tetrahedron, parabolic cylinder",
+     "next": "triple_setup"
+    },
+    {
+     "label": "Cylinder, paraboloid, cone with flat top, x²+y²",
+     "next": "cyl_setup"
+    },
+    {
+     "label": "Sphere, ball, ice-cream cone, x²+y²+z²",
+     "next": "sph_region"
+    },
+    {
+     "label": "Not sure",
+     "next": "coord_choice"
+    }
+   ]
+  },
+  {
+   "id": "coord_choice",
+   "title": "Which coordinates?",
+   "tag": "Strategy",
+   "body": "Look at the surfaces after converting:\nOnly planes → Cartesian.\nx²+y² appears, round shadow, z-axis symmetry → cylindrical (dV = r dz dr dθ).\nx²+y²+z² appears, or cone + sphere → spherical (dV = ρ² sinφ dρ dφ dθ).\nCone + plane z = h: either works; cylindrical is usually simpler.",
+   "choices": [
+    {
+     "label": "Cartesian",
+     "next": "triple_setup"
+    },
+    {
+     "label": "Cylindrical",
+     "next": "cyl_setup"
+    },
+    {
+     "label": "Spherical",
+     "next": "sph_region"
+    }
+   ]
+  },
+  {
+   "id": "triple_setup",
+   "title": "Triple ∫ setup",
+   "tag": "15.6",
+   "body": "1. List all bounding surfaces.\n2. Innermost variable = the one with a clear floor & ceiling (usually z).\n3. Write z from bottom(x,y) to top(x,y).\n4. Shadow D on xy-plane: set top = bottom to find its edge, plus any walls.\n5. Describe D like a 2D region (Type I/II).",
+   "formula": "∭E f dV = ∬D ∫ bottom→top f dz dA",
+   "warn": "A bound may use only OUTER variables, never one already integrated.",
+   "choices": [
+    {
+     "label": "Tetrahedron (plane + coordinate planes)",
+     "next": "tetra"
+    },
+    {
+     "label": "Describe the shadow D",
+     "next": "gen_setup"
+    },
+    {
+     "label": "Bounds done → evaluate",
+     "next": "triple_eval"
+    }
+   ]
+  },
+  {
+   "id": "tetra",
+   "title": "Tetrahedron",
+   "tag": "15.6",
+   "body": "Plane x/a + y/b + z/c = 1 in the first octant.\nz: 0 → c(1 − x/a − y/b)\nShadow (set z=0): line x/a + y/b = 1.\ny: 0 → b(1 − x/a);  x: 0 → a.\nPlane given as 2x+3y+z=6? Intercepts: x=3, y=2, z=6.\nVolume check: abc/6.",
+   "next": "triple_eval"
+  },
+  {
+   "id": "triple_eval",
+   "title": "Evaluate ∭",
+   "tag": "15.6",
+   "body": "Inside out: innermost variable first, treat others as constants, plug bounds.\nAfter the first integration you have a double integral; after the second, a single.\nFor volume, the inner dz integral gives (top − bottom).",
+   "next": "eval_iter"
+  },
+  {
+   "id": "triple_reorder",
+   "title": "Change order (3D)",
+   "tag": "15.6",
+   "body": "1. Write all 6 inequalities. Sketch the solid.\n2. Pick the new innermost variable; solve every surface for it.\n3. Inner bounds: the two surfaces it runs between.\n4. Project onto the plane of the remaining 2 variables: eliminate the inner variable (set the two surfaces equal, or set it to its extreme like 0).\n5. Describe that 2D shadow in the new order.\n6. Split if a boundary changes partway.",
+   "next": "triple_reorder_ex",
+   "nextLabel": "See an example"
+  },
+  {
+   "id": "triple_reorder_ex",
+   "title": "Example",
+   "tag": "15.6",
+   "body": "∫0→1 ∫0→(1−x) ∫0→(1−x−y) f dz dy dx  (tetrahedron x+y+z ≤ 1)\nWant dx dz dy:\nx: 0 → 1−y−z (solve plane for x)\nShadow on yz-plane (x=0): y+z ≤ 1 ⇒ z: 0 → 1−y\ny: 0 → 1\n⇒ ∫0→1 ∫0→(1−y) ∫0→(1−y−z) f dx dz dy\nCurved example: z ≤ 1−y², x from 0 to 2: shadow in yz-plane is under the parabola.",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "cyl_setup",
+   "title": "Cylindrical setup",
+   "tag": "15.7",
+   "body": "Convert each surface:\nx²+y² = R² → r = R (cylinder)\nz = √(x²+y²) → z = r (cone); z = k√(x²+y²) → z = kr\nz = x²+y² → z = r² (paraboloid)\nz = a − x²−y² → z = a − r²\nsphere → z = ±√(R² − r²)\nplane z = y → z = r sinθ",
+   "formula": "dV = r dz dr dθ",
+   "next": "cyl_bounds"
+  },
+  {
+   "id": "cyl_bounds",
+   "title": "Cylindrical bounds",
+   "tag": "15.7",
+   "body": "z: bottom surface → top surface (in r, θ).\nr: 0 → edge of shadow. Edge = where top = bottom (solve for r) or the cylinder wall.\nθ: 0 → 2π unless cut (first octant 0→π/2; y≥0: 0→π; x≥0: −π/2→π/2).\nOff-center cylinder x²+y² = 2ax ⇒ r ≤ 2a cosθ, −π/2 ≤ θ ≤ π/2.",
+   "formula": "∫θ ∫r ∫ z_bot→z_top f · r dz dr dθ",
+   "warn": "Cone z=r vs paraboloid z=r²: they meet at r = 1. Which is on top for 0<r<1? r > r², so the cone.",
+   "next": "cyl_example",
+   "nextLabel": "Examples"
+  },
+  {
+   "id": "cyl_example",
+   "title": "Examples",
+   "tag": "15.7",
+   "body": "Between z = x²+y² and z = 4:\nV = ∫0→2π ∫0→2 (4 − r²) r dr dθ = 2π(8 − 4) = 8π.\n\nInside sphere x²+y²+z² = 2, above cone z = r:\nz: r → √(2 − r²); meet: r = √(2−r²) ⇒ r = 1.\nV = ∫0→2π ∫0→1 (√(2−r²) − r) r dr dθ.",
+   "next": "eval_iter"
+  },
+  {
+   "id": "cyl_from_cart",
+   "title": "Cartesian → cylindrical",
+   "tag": "15.7",
+   "body": "1. Outer two bounds (x, y) describe the shadow: convert it to r, θ like polar.\n2. z bounds: replace x²+y² with r².\n3. Integrand: x = r cosθ, y = r sinθ, x²+y² = r².\n4. Multiply by r.",
+   "choices": [
+    {
+     "label": "Polar region help",
+     "next": "polar_region"
+    },
+    {
+     "label": "Continue",
+     "next": "cyl_bounds"
+    }
+   ]
+  },
+  {
+   "id": "sph_region",
+   "title": "Spherical: the solid",
+   "tag": "15.8",
+   "body": "ρ = distance from origin. φ = angle down from +z axis (0 to π). θ = angle around z-axis.",
+   "choices": [
+    {
+     "label": "Ball / hemisphere / octant of ball",
+     "next": "sph_ball"
+    },
+    {
+     "label": "Ice-cream: above a cone, inside a sphere",
+     "next": "sph_icecream"
+    },
+    {
+     "label": "Sphere not centered at origin (x²+y²+z²=2az)",
+     "next": "sph_shifted"
+    },
+    {
+     "label": "Between two spheres (shell)",
+     "next": "sph_shell"
+    },
+    {
+     "label": "Cut by a plane z = h",
+     "next": "sph_plane"
+    },
+    {
+     "label": "Convert a cone or surface",
+     "next": "sph_convert"
+    }
+   ]
+  },
+  {
+   "id": "sph_ball",
+   "title": "Ball pieces",
+   "tag": "15.8",
+   "body": "Full ball radius R: ρ 0→R, φ 0→π, θ 0→2π.\nUpper hemisphere (z ≥ 0): φ 0→π/2.\nLower: φ π/2→π.\nFirst octant: φ 0→π/2 and θ 0→π/2.\ny ≥ 0 half: θ 0→π.",
+   "next": "sph_integrand"
+  },
+  {
+   "id": "sph_convert",
+   "title": "Converting surfaces",
+   "tag": "15.8",
+   "body": "x²+y²+z² = R² → ρ = R\nz = √(x²+y²) → φ = π/4\nz = √3·√(x²+y²) → φ = π/6\nz = √((x²+y²)/3) → φ = π/3\nGeneral cone z = k√(x²+y²) → tanφ = 1/k\nz = h (plane) → ρ = h secφ\nx²+y² = a² (cylinder) → ρ = a cscφ\nxy-plane → φ = π/2",
+   "next": "sph_region",
+   "nextLabel": "Back to shapes"
+  },
+  {
+   "id": "sph_icecream",
+   "title": "Above cone, inside sphere",
+   "tag": "15.8",
+   "body": "Inside the cone (the part near the +z axis) ⇒ φ from 0 to the cone's angle φ0.\nCone z = √(x²+y²): φ0 = π/4.\nSphere centered at origin radius R: ρ 0→R.\nθ 0→2π.",
+   "formula": "0≤ρ≤R, 0≤φ≤φ0, 0≤θ≤2π",
+   "warn": "Outside/below the cone (but above xy-plane) is φ0 → π/2, not 0 → φ0.",
+   "next": "sph_integrand"
+  },
+  {
+   "id": "sph_shifted",
+   "title": "Shifted sphere",
+   "tag": "15.8",
+   "body": "x²+y²+z² = 2az ⇒ ρ² = 2aρ cosφ ⇒ ρ = 2a cosφ.\n(Sphere radius a, center (0,0,a), touches origin.)\nρ: 0 → 2a cosφ. Whole thing: φ 0→π/2.\nWith cone z = √(x²+y²) also: φ 0→π/4.",
+   "formula": "0 ≤ ρ ≤ 2a cosφ",
+   "warn": "The ρ bound depends on φ, so integrate ρ first.",
+   "next": "sph_integrand"
+  },
+  {
+   "id": "sph_shell",
+   "title": "Spherical shell",
+   "tag": "15.8",
+   "body": "Then the φ, θ bounds of whatever piece is described.",
+   "formula": "R1 ≤ ρ ≤ R2",
+   "next": "sph_integrand"
+  },
+  {
+   "id": "sph_plane",
+   "title": "Plane z = h",
+   "tag": "15.8",
+   "body": "z = h ⇒ ρ cosφ = h ⇒ ρ = h secφ.\nCone capped by plane (below z=h, above cone): ρ 0 → h secφ, φ 0 → φ0.\nCap of sphere above z=h: ρ h secφ → R, φ 0 → arccos(h/R).\n(arccos from where plane meets sphere: R cosφ = h.)",
+   "next": "sph_integrand"
+  },
+  {
+   "id": "sph_from_cart",
+   "title": "Cartesian → spherical",
+   "tag": "15.8",
+   "body": "1. Identify the solid from the bounds:\nz from √(x²+y²) to √(R²−x²−y²) ⇒ ice-cream cone.\nz from 0 to √(R²−x²−y²) ⇒ upper half ball.\n2. Write spherical bounds.\n3. Convert integrand and multiply by ρ² sinφ.",
+   "next": "sph_region",
+   "nextLabel": "Choose solid"
+  },
+  {
+   "id": "sph_integrand",
+   "title": "Integrand & Jacobian",
+   "tag": "15.8",
+   "body": "x = ρ sinφ cosθ\ny = ρ sinφ sinθ\nz = ρ cosφ\nx²+y²+z² = ρ²;  √(x²+y²) = ρ sinφ\nOrder dρ dφ dθ. If all bounds are constants, it splits into 3 single integrals.",
+   "formula": "dV = ρ² sinφ dρ dφ dθ",
+   "warn": "Don't forget ρ² sinφ. Don't swap φ (from z-axis) and θ (around).",
+   "next": "sph_eval"
+  },
+  {
+   "id": "sph_eval",
+   "title": "Evaluate",
+   "tag": "15.8",
+   "body": "ρ integral: ∫ρ² dρ = ρ³/3, ∫ρ³ dρ = ρ⁴/4.\nIf ρ bound is 2a cosφ: get (2a cosφ)³/3 · sinφ ⇒ u = cosφ.\n∫ cosⁿφ sinφ dφ = −cosⁿ⁺¹φ/(n+1).\n∫0→π sinφ dφ = 2;  ∫0→π/2 sinφ dφ = 1;\n∫0→π/4 sinφ dφ = 1 − √2/2.\n∫0→2π dθ = 2π.",
+   "choices": [
+    {
+     "label": "Find a centroid next",
+     "next": "solid_centroid"
+    },
+    {
+     "label": "Done → check",
+     "next": "final_check"
+    }
+   ]
+  },
+  {
+   "id": "mass_menu",
+   "title": "Mass & centroid",
+   "tag": "Mass",
+   "choices": [
+    {
+     "label": "2D lamina",
+     "next": "lamina_centroid"
+    },
+    {
+     "label": "3D solid",
+     "next": "solid_centroid"
+    }
+   ]
+  },
+  {
+   "id": "lamina_centroid",
+   "title": "Lamina centroid",
+   "tag": "Mass",
+   "body": "1. m = ∬ δ dA (uniform δ: use Area).\n2. M_y = ∬ x δ dA,  M_x = ∬ y δ dA.\n3. Same bounds for all three integrals.\nSymmetry: D symmetric across y-axis (and δ too) ⇒ x̄ = 0.",
+   "formula": "x̄ = M_y / m,   ȳ = M_x / m",
+   "warn": "M_y uses x (moment about the y-axis). Easy to swap.",
+   "next": "shape2d",
+   "nextLabel": "Set up bounds"
+  },
+  {
+   "id": "solid_centroid",
+   "title": "Solid centroid",
+   "tag": "Mass",
+   "body": "1. Symmetry: round around z-axis ⇒ x̄ = ȳ = 0. Only find z̄.\n2. m = ∭ δ dV (uniform: use volume V).\n3. M_xy = ∭ z δ dV. In spherical z = ρ cosφ ⇒ integrand ρ³ sinφ cosφ. In cylindrical z·r.\n4. z̄ = M_xy / m.",
+   "formula": "z̄ = (1/m) ∭ z δ dV",
+   "warn": "z̄ can't be 0 if the solid is entirely above the xy-plane. z̄ must be between the lowest and highest z of the solid.",
+   "choices": [
+    {
+     "label": "Worked example: cone in sphere",
+     "next": "centroid_ex"
+    },
+    {
+     "label": "Set up bounds",
+     "next": "shape3d"
+    }
+   ]
+  },
+  {
+   "id": "centroid_ex",
+   "title": "Cone in shifted sphere",
+   "tag": "Mass",
+   "body": "Above z = √(x²+y²), inside x²+y²+z² = 2z.\nρ: 0→2cosφ, φ: 0→π/4, θ: 0→2π.\nV = 2π ∫0→π/4 (8cos³φ/3) sinφ dφ\n  = 2π·(8/3)·¼(1 − ¼) = π\nM = 2π ∫0→π/4 (16cos⁴φ/4) cosφ sinφ dφ\n  = 2π·4·(1/6)(1 − 1/8) = 7π/6\nz̄ = 7/6, x̄ = ȳ = 0. (Solid spans z 0→2 ✓)",
+   "next": "final_check",
+   "nextLabel": "Check answer"
+  },
+  {
+   "id": "line_start",
+   "title": "What's being integrated?",
+   "tag": "16.2",
+   "body": "Keywords decide it.",
+   "choices": [
+    {
+     "label": "Scalar: ∫ f ds, arc length, wire density/mass",
+     "next": "scalar_line"
+    },
+    {
+     "label": "Vector: work, force, ∫ F·dr, ∫ P dx + Q dy",
+     "next": "work_start"
+    },
+    {
+     "label": "∫ f dx  or  ∫ f dy alone",
+     "next": "dx_line"
+    },
+    {
+     "label": "How do I parameterize?",
+     "next": "param"
+    }
+   ]
+  },
+  {
+   "id": "param",
+   "title": "Parameterize the path",
+   "tag": "16.2",
+   "body": "Segment A → B: r(t) = A + t(B − A), 0 ≤ t ≤ 1.\nCircle radius a, CCW: (a cos t, a sin t), 0→2π. Quarter in QI: 0→π/2.\nClockwise: (a cos t, −a sin t), or run t backward.\nEllipse: (a cos t, b sin t).\nGraph y = g(x), x: a→b: (t, g(t)), t: a→b.\nPolygon / piecewise path: do each piece, then add.",
+   "warn": "Direction matters for work: start point at the lower t.",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "scalar_line",
+   "title": "Scalar line ∫ f ds",
+   "tag": "16.2",
+   "body": "1. Parameterize r(t), a ≤ t ≤ b.\n2. r'(t).\n3. Speed |r'(t)| = √(x'² + y'² + z'²).\n4. Plug r(t) into f.\n5. ∫ f(r(t))·|r'(t)| dt.\nMass of wire = ∫ δ ds. Length = ∫ 1 ds.",
+   "formula": "∫C f ds = ∫a→b f(r(t)) |r'(t)| dt",
+   "warn": "ds ≠ dt. Include the speed. Don't forget the density.",
+   "choices": [
+    {
+     "label": "Parameterization help",
+     "next": "param_scalar"
+    },
+    {
+     "label": "Example",
+     "next": "scalar_ex"
+    }
+   ]
+  },
+  {
+   "id": "param_scalar",
+   "title": "Parameterize the path",
+   "tag": "16.2",
+   "body": "Segment A → B: r(t) = A + t(B − A), 0 ≤ t ≤ 1.\nCircle radius a, CCW: (a cos t, a sin t), 0→2π. Quarter in QI: 0→π/2.\nClockwise: (a cos t, −a sin t), or run t backward.\nEllipse: (a cos t, b sin t).\nGraph y = g(x), x: a→b: (t, g(t)), t: a→b.\nPolygon / piecewise path: do each piece, then add.",
+   "warn": "Direction matters for work: start point at the lower t.",
+   "next": "scalar_ex"
+  },
+  {
+   "id": "scalar_ex",
+   "title": "Example",
+   "tag": "16.2",
+   "body": "∫C (x + y) ds, segment (0,0)→(3,4).\nr = (3t, 4t), r' = (3,4), speed = 5.\nf = 3t + 4t = 7t.\n∫0→1 7t·5 dt = 35/2.\nCircle radius a: speed = a. Segment: speed = |B − A|.",
+   "next": "final_check",
+   "nextLabel": "Check answer"
+  },
+  {
+   "id": "work_start",
+   "title": "Work ∫ F·dr",
+   "tag": "16.2",
+   "body": "Before grinding, look for shortcuts.",
+   "choices": [
+    {
+     "label": "Closed curve in the plane",
+     "next": "green_start"
+    },
+    {
+     "label": "P_y = Q_x (curl F = 0)? Check it",
+     "next": "cons_start"
+    },
+    {
+     "label": "Just compute directly",
+     "next": "work_direct"
+    }
+   ]
+  },
+  {
+   "id": "work_direct",
+   "title": "Direct computation",
+   "tag": "16.2",
+   "body": "1. Parameterize r(t) (start → end).\n2. r'(t).\n3. F(r(t)): plug x(t), y(t), z(t) into F.\n4. Dot product F(r(t))·r'(t). It's a scalar.\n5. Integrate in t.\nP dx + Q dy form: dx = x'(t) dt, dy = y'(t) dt.",
+   "formula": "W = ∫a→b F(r(t)) · r'(t) dt",
+   "warn": "Dot product, not magnitude. Reversing the path flips the sign.",
+   "choices": [
+    {
+     "label": "Parameterization help",
+     "next": "param_work"
+    },
+    {
+     "label": "Example",
+     "next": "work_ex"
+    }
+   ]
+  },
+  {
+   "id": "param_work",
+   "title": "Parameterize the path",
+   "tag": "16.2",
+   "body": "Segment A → B: r(t) = A + t(B − A), 0 ≤ t ≤ 1.\nCircle radius a, CCW: (a cos t, a sin t), 0→2π. Quarter in QI: 0→π/2.\nClockwise: (a cos t, −a sin t), or run t backward.\nEllipse: (a cos t, b sin t).\nGraph y = g(x), x: a→b: (t, g(t)), t: a→b.\nPolygon / piecewise path: do each piece, then add.",
+   "warn": "Direction matters for work: start point at the lower t.",
+   "next": "work_ex"
+  },
+  {
+   "id": "work_ex",
+   "title": "Example",
+   "tag": "16.2",
+   "body": "F = ⟨x², xy⟩, segment (0,0) → (1,2).\nr = (t, 2t), r' = (1, 2).\nF(r(t)) = ⟨t², 2t²⟩.\nF·r' = t² + 4t² = 5t².\nW = ∫0→1 5t² dt = 5/3.",
+   "next": "final_check",
+   "nextLabel": "Check answer"
+  },
+  {
+   "id": "dx_line",
+   "title": "∫ f dx or ∫ f dy",
+   "tag": "16.2",
+   "body": "Parameterize, then dx = x'(t) dt (or dy = y'(t) dt). No speed factor.",
+   "formula": "∫C f dx = ∫a→b f(r(t)) x'(t) dt",
+   "next": "param_dx"
+  },
+  {
+   "id": "param_dx",
+   "title": "Parameterize the path",
+   "tag": "16.2",
+   "body": "Segment A → B: r(t) = A + t(B − A), 0 ≤ t ≤ 1.\nCircle radius a, CCW: (a cos t, a sin t), 0→2π. Quarter in QI: 0→π/2.\nClockwise: (a cos t, −a sin t), or run t backward.\nEllipse: (a cos t, b sin t).\nGraph y = g(x), x: a→b: (t, g(t)), t: a→b.\nPolygon / piecewise path: do each piece, then add.",
+   "warn": "Direction matters for work: start point at the lower t.",
+   "next": "final_check"
+  },
+  {
+   "id": "cons_start",
+   "title": "Conservative?",
+   "tag": "16.3",
+   "choices": [
+    {
+     "label": "2D field ⟨P, Q⟩",
+     "next": "cons_2d"
+    },
+    {
+     "label": "3D field ⟨P, Q, R⟩",
+     "next": "cons_3d"
+    }
+   ]
+  },
+  {
+   "id": "cons_2d",
+   "title": "2D test",
+   "tag": "16.3",
+   "body": "Compute P_y and Q_x.\nEqual (on all of ℝ² or a simply connected domain) ⇒ conservative.\nNot equal ⇒ not conservative; line integrals depend on path.",
+   "formula": "P_y = Q_x",
+   "warn": "Watch domains with holes (e.g. F undefined at origin): equal partials there don't guarantee conservative.",
+   "choices": [
+    {
+     "label": "Equal → find potential",
+     "next": "potential2"
+    },
+    {
+     "label": "Not equal → compute directly",
+     "next": "work_direct"
+    }
+   ]
+  },
+  {
+   "id": "cons_3d",
+   "title": "3D test",
+   "tag": "16.3",
+   "body": "Check all three: P_y = Q_x, P_z = R_x, Q_z = R_y.\n(That's curl F = 0.)",
+   "formula": "curl F = 0",
+   "choices": [
+    {
+     "label": "All equal → find potential",
+     "next": "potential3"
+    },
+    {
+     "label": "Some differ → compute directly",
+     "next": "work_direct"
+    }
+   ]
+  },
+  {
+   "id": "potential2",
+   "title": "Find f (2D)",
+   "tag": "16.3",
+   "body": "1. f = ∫ P dx + g(y).\n2. Differentiate: f_y = (stuff) + g'(y).\n3. Set f_y = Q. Solve for g'(y). It must have only y.\n4. Integrate g'. f is a SCALAR.\nEx: F = ⟨2xy + 1, x² + 3y²⟩\nf = x²y + x + g(y); f_y = x² + g' = x² + 3y² ⇒ g = y³.\nf = x²y + x + y³. Check: ∇f = F.",
+   "warn": "Don't forget g(y). Integrating P alone misses pure-y terms.",
+   "next": "ftli"
+  },
+  {
+   "id": "potential3",
+   "title": "Find f (3D)",
+   "tag": "16.3",
+   "body": "1. f = ∫ P dx + g(y,z).\n2. f_y = Q ⇒ find g_y, integrate in y: g = … + h(z).\n3. f_z = R ⇒ find h'(z), integrate.\nEx: F = ⟨y, x + z, y⟩: f = xy + g(y,z); f_y = x + g_y = x + z ⇒ g = yz + h(z); f_z = y + h' = y ⇒ h = 0. f = xy + yz.",
+   "next": "ftli"
+  },
+  {
+   "id": "ftli",
+   "title": "Fundamental theorem",
+   "tag": "16.3",
+   "body": "Work = potential at the end minus potential at the start. Path doesn't matter.\nClosed curve ⇒ 0.",
+   "formula": "∫C ∇f · dr = f(B) − f(A)",
+   "next": "final_check",
+   "nextLabel": "Check answer"
+  },
+  {
+   "id": "green_start",
+   "title": "Green's theorem?",
+   "tag": "16.4",
+   "body": "Green needs: closed, simple, plane curve, and P, Q smooth on the whole inside.",
+   "choices": [
+    {
+     "label": "Closed, counterclockwise",
+     "next": "green_steps"
+    },
+    {
+     "label": "Closed, clockwise",
+     "next": "green_cw"
+    },
+    {
+     "label": "Not closed (open path)",
+     "next": "green_open"
+    },
+    {
+     "label": "Asked to verify: do it both ways",
+     "next": "green_both"
+    }
+   ]
+  },
+  {
+   "id": "green_cw",
+   "title": "Clockwise",
+   "tag": "16.4",
+   "body": "Positive orientation = CCW (region on your left). For clockwise, compute with Green and NEGATE.",
+   "next": "green_steps"
+  },
+  {
+   "id": "green_open",
+   "title": "Open path",
+   "tag": "16.4",
+   "body": "Green doesn't apply directly. Options: compute directly, check if conservative, or close the path with a segment, use Green, then subtract the added segment's integral.",
+   "choices": [
+    {
+     "label": "Compute directly",
+     "next": "work_direct"
+    },
+    {
+     "label": "Check conservative",
+     "next": "cons_2d"
+    }
+   ]
+  },
+  {
+   "id": "green_steps",
+   "title": "Apply Green",
+   "tag": "16.4",
+   "body": "1. P = coefficient of dx, Q = coefficient of dy.\n2. Compute Q_x and P_y.\n3. Integrand Q_x − P_y.\n4. D = region inside C. Set up ∬D.",
+   "formula": "∮C P dx + Q dy = ∬D (Q_x − P_y) dA",
+   "warn": "It's Q_x − P_y (Q first). Reversing it flips the sign.",
+   "choices": [
+    {
+     "label": "Q_x − P_y is a constant k",
+     "next": "green_const"
+    },
+    {
+     "label": "D is a disk / circle",
+     "next": "polar_region"
+    },
+    {
+     "label": "D is a triangle / polygon",
+     "next": "triangle_region"
+    },
+    {
+     "label": "D is a rectangle",
+     "next": "rect_eval"
+    }
+   ]
+  },
+  {
+   "id": "green_const",
+   "title": "Constant integrand",
+   "tag": "16.4",
+   "body": "∮ = k · Area(D).\nTriangle ½bh, disk πR², ellipse πab, rectangle lw.",
+   "warn": "Use the actual region's area (triangle ≠ rectangle).",
+   "next": "final_check",
+   "nextLabel": "Check answer"
+  },
+  {
+   "id": "green_both",
+   "title": "Direct and Green",
+   "tag": "16.4",
+   "body": "Green side: ∬D (Q_x − P_y) dA.\nDirect side: for each edge, parameterize A + t(B−A) in the CCW order, compute ∫ (P x' + Q y') dt, sum all edges.\nThe two answers must match. That's your check.",
+   "next": "green_ex",
+   "nextLabel": "Worked example"
+  },
+  {
+   "id": "green_ex",
+   "title": "Example",
+   "tag": "16.4",
+   "body": "∮ y² dx + 3xy dy, triangle (0,0)→(1,0)→(1,2)→(0,0).\nGreen: Q_x − P_y = 3y − 2y = y.\n∫0→1 ∫0→2x y dy dx = ∫0→1 2x² dx = 2/3.\nDirect:\nEdge 1: y = 0 ⇒ 0.\nEdge 2: x=1, y=2t: ∫0→1 3·2t·2 dt = 6.\nEdge 3: (1−t, 2−2t): integrand −16(1−t)² ⇒ −16/3.\nSum 6 − 16/3 = 2/3 ✓",
+   "next": "final_check",
+   "nextLabel": "Check answer"
+  },
+  {
+   "id": "ops_start",
+   "title": "Which operator?",
+   "tag": "16.5",
+   "choices": [
+    {
+     "label": "Gradient ∇f",
+     "next": "op_grad"
+    },
+    {
+     "label": "Divergence ∇·F",
+     "next": "op_div"
+    },
+    {
+     "label": "Curl ∇×F",
+     "next": "op_curl"
+    },
+    {
+     "label": "Laplacian ∇²f",
+     "next": "op_lap"
+    },
+    {
+     "label": "Is this expression meaningful?",
+     "next": "op_types"
+    },
+    {
+     "label": "Identities: curl grad, div curl",
+     "next": "op_ident"
+    }
+   ]
+  },
+  {
+   "id": "op_grad",
+   "title": "Gradient",
+   "tag": "16.5",
+   "body": "Input: scalar f. Output: vector.\nPoints toward fastest increase of f.",
+   "formula": "∇f = ⟨f_x, f_y, f_z⟩",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "op_div",
+   "title": "Divergence",
+   "tag": "16.5",
+   "body": "Input: vector F = ⟨P,Q,R⟩. Output: scalar.\n>0: net outflow (source). <0: inflow (sink). =0: incompressible.",
+   "formula": "∇·F = P_x + Q_y + R_z",
+   "warn": "Each component is differentiated by its OWN variable only.",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "op_curl",
+   "title": "Curl",
+   "tag": "16.5",
+   "body": "Input: vector. Output: vector.\nCyclic pattern x→y→z→x:\ni: R_y − Q_z\nj: P_z − R_x\nk: Q_x − P_y\n(Determinant with rows i j k / ∂x ∂y ∂z / P Q R; the j term gets a minus.)\ncurl F = 0 ⇒ irrotational. 2D field: curl = (Q_x − P_y) k.",
+   "formula": "∇×F = ⟨R_y − Q_z, P_z − R_x, Q_x − P_y⟩",
+   "warn": "Order matters in each component. Check the j component's sign.",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "op_lap",
+   "title": "Laplacian",
+   "tag": "16.5",
+   "body": "Input: scalar f. Output: scalar. It's div(grad f).\nNot always zero. (f with ∇²f = 0 is called harmonic.)",
+   "formula": "∇²f = f_xx + f_yy + f_zz",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "op_types",
+   "title": "Meaningful?",
+   "tag": "16.5",
+   "body": "Work inside out, tracking scalar (S) or vector (V).\ngrad: S→V   div: V→S   curl: V→V   ∇²: S→S\nOK: div(grad f), curl(grad f), grad(div F), div(curl F), curl(curl F)\nMeaningless: curl(div F) [curl of scalar], div(div F), grad(grad f), grad F (F vector), div f (f scalar).",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "op_ident",
+   "title": "Identities",
+   "tag": "16.5",
+   "body": "(For f, F with continuous 2nd partials.)",
+   "formula": "∇×(∇f) = 0\n∇·(∇×F) = 0\n∇·(∇f) = ∇²f",
+   "warn": "curl of grad is the ZERO VECTOR; div of grad is the Laplacian (not 0 in general).",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "concept_start",
+   "title": "What kind of question?",
+   "tag": "Concepts",
+   "choices": [
+    {
+     "label": "Which sketch matches this integral?",
+     "next": "read_bounds"
+    },
+    {
+     "label": "Which integral gives this volume?",
+     "next": "concept_which_integral"
+    },
+    {
+     "label": "Sign of the integral / is it zero?",
+     "next": "concept_sign"
+    },
+    {
+     "label": "Vector field picture: div or curl sign",
+     "next": "concept_field"
+    },
+    {
+     "label": "Line integral sign from a picture",
+     "next": "concept_line_sign"
+    },
+    {
+     "label": "Which coordinate system?",
+     "next": "coord_choice"
+    }
+   ]
+  },
+  {
+   "id": "concept_which_integral",
+   "title": "Match integral to solid",
+   "tag": "Concepts",
+   "body": "Check each candidate:\n1. Right Jacobian? (r for cyl/polar, ρ² sinφ for spherical, none for Cartesian.)\n2. Innermost bounds = floor/ceiling of the solid.\n3. Outer bounds = the shadow; edge where surfaces meet.\n4. Plug a test point to confirm top > bottom.\n5. Volume integrand should be 1 (times Jacobian).",
+   "next": "read_bounds3",
+   "nextLabel": "Reading 3D bounds"
+  },
+  {
+   "id": "concept_sign",
+   "title": "Sign / symmetry",
+   "tag": "Concepts",
+   "body": "Integrand > 0 on all of D ⇒ integral > 0.\nOdd symmetry ⇒ 0: if D is symmetric across the y-axis and f(−x,y) = −f(x,y), ∬ f = 0. E.g. ∬ x dA over a disk = 0; ∬ x y² over a disk = 0.\nSame with y and the x-axis.\nFor a picture: compare how much region is in f>0 vs f<0.",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "concept_field",
+   "title": "Reading a field plot",
+   "tag": "Concepts",
+   "body": "Divergence at a point: arrows point away / get longer as you move along the flow ⇒ positive. Arrows converge / shrink ⇒ negative.\nCurl (k-component): drop a paddle wheel. Spins CCW ⇒ positive, CW ⇒ negative. Arrows longer on one side than the other also means rotation.\nUniform parallel arrows ⇒ div = 0 and curl = 0.",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "concept_line_sign",
+   "title": "Sign from a picture",
+   "tag": "Concepts",
+   "body": "Walk along C in its direction.\nF mostly WITH your motion ⇒ ∫F·dr > 0. Against ⇒ < 0. Perpendicular ⇒ ≈ 0.\nClosed loop with nonzero circulation ⇒ F not conservative.\nScalar ∫ f ds ignores direction; sign comes from f only.",
+   "next": "final_check",
+   "nextLabel": "Done"
+  },
+  {
+   "id": "fs_menu",
+   "title": "Formula sheet",
+   "tag": "Formulas",
+   "choices": [
+    {
+     "label": "Coordinates & Jacobians",
+     "next": "fs_coords"
+    },
+    {
+     "label": "Area, volume, surface, centroid",
+     "next": "fs_geom"
+    },
+    {
+     "label": "Line integrals & Green",
+     "next": "fs_line"
+    },
+    {
+     "label": "grad / div / curl",
+     "next": "fs_ops"
+    }
+   ]
+  },
+  {
+   "id": "fs_coords",
+   "title": "Coordinates",
+   "tag": "Formulas",
+   "formula": "Polar: x=r cosθ, y=r sinθ\n  dA = r dr dθ\nCyl: + z=z\n  dV = r dz dr dθ\nSph: x=ρ sinφ cosθ\n  y=ρ sinφ sinθ\n  z=ρ cosφ\n  dV = ρ² sinφ dρ dφ dθ\nx²+y² = r² = ρ² sin²φ\nx²+y²+z² = ρ²",
+   "next": "fs_menu",
+   "nextLabel": "Back"
+  },
+  {
+   "id": "fs_geom",
+   "title": "Geometry",
+   "tag": "Formulas",
+   "formula": "Area = ∬ 1 dA\nV = ∭ 1 dV = ∬ (top−bot) dA\nSurf = ∬ √(1+f_x²+f_y²) dA\nm = ∭ δ dV\nx̄ = ∭ xδ dV / m (same for ȳ, z̄)\n2D: x̄ = M_y/m, M_y = ∬ xδ dA\navg f = ∬ f dA / Area",
+   "next": "fs_menu",
+   "nextLabel": "Back"
+  },
+  {
+   "id": "fs_line",
+   "title": "Line integrals",
+   "tag": "Formulas",
+   "formula": "∫ f ds = ∫ f(r(t)) |r'(t)| dt\n∫ F·dr = ∫ F(r(t))·r'(t) dt\nSegment: r = A + t(B−A)\n∫ ∇f·dr = f(B) − f(A)\n2D conservative: P_y = Q_x\nGreen: ∮ P dx + Q dy\n  = ∬ (Q_x − P_y) dA",
+   "next": "fs_menu",
+   "nextLabel": "Back"
+  },
+  {
+   "id": "fs_ops",
+   "title": "Operators",
+   "tag": "Formulas",
+   "formula": "∇f = ⟨f_x, f_y, f_z⟩\n∇·F = P_x + Q_y + R_z\n∇×F = ⟨R_y−Q_z, P_z−R_x, Q_x−P_y⟩\n∇²f = f_xx + f_yy + f_zz\n∇×∇f = 0,  ∇·(∇×F) = 0",
+   "next": "fs_menu",
+   "nextLabel": "Back"
+  },
+  {
+   "id": "tk_menu",
+   "title": "Integration toolkit",
+   "tag": "Toolkit",
+   "choices": [
+    {
+     "label": "u-substitution",
+     "next": "tk_usub"
+    },
+    {
+     "label": "Trig powers (sin², cos²…)",
+     "next": "tk_trig"
+    },
+    {
+     "label": "Integration by parts",
+     "next": "tk_parts"
+    },
+    {
+     "label": "Standard definite values",
+     "next": "tk_values"
+    }
+   ]
+  },
+  {
+   "id": "tk_usub",
+   "title": "u-substitution",
+   "tag": "Toolkit",
+   "body": "Look for a function and its derivative (up to a constant).\nx·e^(x²): u = x², du = 2x dx ⇒ ½e^(x²)\nr√(1+4r²): u = 1+4r² ⇒ (1/12)(1+4r²)^(3/2)\nr·e^(−r²): ⇒ −½e^(−r²)\ncosⁿφ sinφ: u = cosφ ⇒ −cosⁿ⁺¹φ/(n+1)\nr/√(a²−r²): ⇒ −√(a²−r²)\nChange the bounds too, or back-substitute.",
+   "next": "tk_menu",
+   "nextLabel": "Back"
+  },
+  {
+   "id": "tk_trig",
+   "title": "Trig powers",
+   "tag": "Toolkit",
+   "body": "sin²θ = (1 − cos2θ)/2\ncos²θ = (1 + cos2θ)/2\nsinθ cosθ = ½ sin2θ\n∫0→2π sin²θ dθ = ∫0→2π cos²θ dθ = π\n∫0→π/2 sin²θ dθ = π/4\nOdd power: save one factor, convert the rest with sin² = 1 − cos², then u-sub.",
+   "next": "tk_menu",
+   "nextLabel": "Back"
+  },
+  {
+   "id": "tk_parts",
+   "title": "By parts",
+   "tag": "Toolkit",
+   "body": "∫u dv = uv − ∫v du.\nPick u by LIATE: Log, Inverse trig, Algebraic, Trig, Exponential.\n∫ x e^x dx = (x − 1)e^x\n∫ x cos x dx = x sin x + cos x\n∫ ln x dx = x ln x − x",
+   "next": "tk_menu",
+   "nextLabel": "Back"
+  },
+  {
+   "id": "tk_values",
+   "title": "Standard values",
+   "tag": "Toolkit",
+   "body": "∫0→π sinφ dφ = 2\n∫0→π/2 sinφ dφ = 1\n∫0→π/2 cosθ dθ = 1\n∫0→2π cosθ dθ = 0 = ∫0→2π sinθ dθ\n∫ 1/(1+x²) = arctan x\n∫ 1/√(1−x²) = arcsin x\ncos(π/4) = sin(π/4) = √2/2\ncos(π/6) = √3/2, sin(π/6) = ½\ncos(π/3) = ½, sin(π/3) = √3/2",
+   "next": "tk_menu",
+   "nextLabel": "Back"
+  },
+  {
+   "id": "final_check",
+   "title": "Before you box it",
+   "tag": "Check",
+   "body": "☐ Jacobian: r (polar/cyl), ρ² sinφ (sph)\n☐ Bounds: lower < upper; outer bounds are numbers\n☐ Every term survived (upper) − (lower)\n☐ Volume, area, mass, length > 0\n☐ Orientation: CW or reversed path ⇒ flip sign\n☐ Green: Q_x − P_y, not P_y − Q_x\n☐ ds has the speed; dt doesn't\n☐ Centroid lies inside the solid\n☐ ½ for triangle area\n☐ Radians, not degrees"
+  }
+ ]
+}
