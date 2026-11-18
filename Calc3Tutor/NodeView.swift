@@ -7,7 +7,7 @@ struct NodeView: View {
     let nodeID: String
 
     @ScaledMetric(relativeTo: .body) private var textSize: CGFloat = 16
-    @ScaledMetric(relativeTo: .body) private var formulaSize: CGFloat = 16
+    @ScaledMetric(relativeTo: .body) private var formulaSize: CGFloat = 17
 
     var body: some View {
         let node = store.node(nodeID)
@@ -37,10 +37,13 @@ struct NodeView: View {
 
             if let body = node.body {
                 Section {
-                    MathText.render(body, size: textSize)
-                        .lineSpacing(3)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.vertical, 2)
+                    let lines = body.components(separatedBy: "\n")
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(lines.indices, id: \.self) { i in
+                            MathLine(text: lines[i], size: textSize)
+                        }
+                    }
+                    .padding(.vertical, 4)
                 }
             }
 
@@ -61,7 +64,8 @@ struct NodeView: View {
                             .font(.footnote)
                             .foregroundStyle(.orange)
                             .padding(.top, 1)
-                        MathText.render(warn, size: textSize - 2, weight: .medium)
+                        Text(warn)
+                            .font(.system(size: textSize - 2, weight: .medium, design: .rounded))
                             .foregroundStyle(Color(red: 1.0, green: 0.78, blue: 0.5))
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -171,13 +175,12 @@ private struct FormulaCard: View {
                     Rectangle()
                         .fill(Color.white.opacity(0.12))
                         .frame(height: 1)
-                        .padding(.vertical, 6)
+                        .padding(.vertical, 8)
                 }
-                MathText.render(trimmed, size: size, weight: .semibold)
-                    .foregroundStyle(isContinuation ? Color.white.opacity(0.75) : Color.white)
+                MathLine(text: trimmed, size: size, weight: .medium)
+                    .foregroundStyle(isContinuation ? Color.white.opacity(0.8) : Color.white)
                     .padding(.leading, isContinuation ? 12 : 0)
-                    .padding(.top, isContinuation ? 2 : 0)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, isContinuation ? 4 : 0)
             }
         }
         .padding(.vertical, 6)
@@ -198,8 +201,7 @@ private struct StepRow: View {
                 .foregroundStyle(.black)
                 .frame(width: 20, height: 20)
                 .background(Circle().fill(tint))
-            MathText.render(text, size: size)
-                .fixedSize(horizontal: false, vertical: true)
+            MathLine(text: text, size: size)
         }
         .padding(.vertical, 3)
     }
@@ -219,7 +221,8 @@ private struct ChoiceRow: View {
                 .frame(width: 30, height: 30)
                 .background(Circle().fill(tint.opacity(0.22)))
             VStack(alignment: .leading, spacing: 1) {
-                MathText.render(label, size: 16, weight: .medium)
+                Text(label)
+                    .font(.system(size: 16, weight: .medium, design: .rounded))
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
                 if let tag = target.tag, !tag.isEmpty {
