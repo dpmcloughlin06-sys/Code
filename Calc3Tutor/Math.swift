@@ -209,8 +209,9 @@ enum MathInline {
                 result = result + text(children, fonts: fonts, size: (size * 0.7).rounded(),
                                        offset: offset - size * 0.2)
             case let .sup(children):
-                result = result + text(children, fonts: fonts, size: (size * 0.7).rounded(),
-                                       offset: offset + size * 0.42)
+                let small = (size * 0.7).rounded()
+                result = result + Text("\u{200A}").font(fonts.upright(small))
+                    + text(children, fonts: fonts, size: small, offset: offset + size * 0.42)
             case let .frac(num, den):
                 // Inside a script there's no room to stack; write it inline.
                 result = result + text(num, fonts: fonts, size: size, offset: offset)
@@ -264,25 +265,41 @@ enum MathInline {
 
 // MARK: - Atoms: the unbreakable pieces a line is built from
 
+/// Where a line may wrap before an atom: 0 = glued to the previous atom, 1 = a space
+/// (wrap only if a term is too long), 2 = a natural break (between words, or next to =, +, −, commas).
 struct MathAtom: Identifiable {
     let id: Int
-    let spaceBefore: Bool
+    let level: Int
     let view: AnyView
 }
 
 enum MathAtoms {
+    /// Natural places to wrap, as when writing by hand: after a comma or "=",
+    /// or before "+", "−" and relations, so a new line starts with the operator.
+    static let breakAfter: Set<Character> = [",", ";", ":", "=", "→", "⟺", "≈", "✓"]
+    static let breakBefore: Set<Character> = ["+", "−", "-", "=", "→", "⟺", "≤", "≥", "<", ">", "·", "×", "±"]
+
     static func build(_ nodes: [MathNode], fonts: MathFonts, size: CGFloat) -> [MathAtom] {
         var atoms: [MathAtom] = []
         var pending: Text?
-        var spaceNext = false
+        var pendingLevel = 0
+        var spaced = false          // a space came before the next atom
+        var lastChar: Character?    // last character drawn, to judge break points
+        var lastWasProse = false
 
-        func emit(_ view: AnyView) {
-            atoms.append(MathAtom(id: atoms.count, spaceBefore: spaceNext, view: view))
-            spaceNext = false
+        func level(startsWith first: Character?, prose: Bool, opLike: Bool) -> Int {
+            guard spaced, !(atoms.isEmpty && pending == nil) else { return 0 }
+            if prose || lastWasProse || opLike { return 2 }
+            if let c = lastChar, breakAfter.contains(c) { return 2 }
+            if let f = first, breakBefore.contains(f) { return 2 }
+            return 1
+        }
+        func emit(_ view: AnyView, level: Int) {
+            atoms.append(MathAtom(id: atoms.count, level: level, view: view))
         }
         func flush() {
             if let t = pending {
-                emit(AnyView(t.fixedSize()))
+                emit(AnyView(t.fixedSize()), level: pendingLevel)
                 pending = nil
             }
         }
@@ -291,18 +308,40 @@ enum MathAtoms {
             switch node {
             case .space:
                 flush()
-                if !atoms.isEmpty { spaceNext = true }
+                spaced = true
             case .run, .sub, .sup:
+                var first: Character?
+                var prose = false
+                if case let .run(s, style) = node {
+                    first = s.first
+                    prose = style == .prose
+                }
+                if pending == nil {
+                    pendingLevel = level(startsWith: first, prose: prose, opLike: false)
+                    spaced = false
+                }
                 pending = (pending ?? Text("")) + MathInline.text([node], fonts: fonts, size: size, offset: 0)
+                if case let .run(s, style) = node {
+                    lastChar = s.last
+                    lastWasProse = style == .prose
+                } else {
+                    lastWasProse = false
+                }
             case let .frac(num, den):
                 flush()
-                emit(AnyView(FractionView(num: num, den: den, fonts: fonts, size: size)))
+                emit(AnyView(FractionView(num: num, den: den, fonts: fonts, size: size)),
+                     level: level(startsWith: nil, prose: false, opLike: false))
+                spaced = false; lastChar = "x"; lastWasProse = false
             case let .sqrt(children):
                 flush()
-                emit(AnyView(RootView(content: children, fonts: fonts, size: size)))
+                emit(AnyView(RootView(content: children, fonts: fonts, size: size)),
+                     level: level(startsWith: nil, prose: false, opLike: false))
+                spaced = false; lastChar = "x"; lastWasProse = false
             case let .bigOp(symbol, lower, upper):
                 flush()
-                emit(AnyView(BigOpView(symbol: symbol, lower: lower, upper: upper, fonts: fonts, size: size)))
+                emit(AnyView(BigOpView(symbol: symbol, lower: lower, upper: upper, fonts: fonts, size: size)),
+                     level: level(startsWith: nil, prose: false, opLike: true))
+                spaced = false; lastChar = nil; lastWasProse = false
             }
         }
         flush()
@@ -323,7 +362,7 @@ struct MathLine: View {
         let atoms = MathAtoms.build(MathParser.parse(text), fonts: fonts, size: size)
         MathFlow(wrap: true, gap: size * 0.28, lineGap: size * 0.3) {
             ForEach(atoms) { atom in
-                atom.view.layoutValue(key: SpaceBefore.self, value: atom.spaceBefore)
+                atom.view.layoutValue(key: BreakLevel.self, value: atom.level)
             }
         }
     }
@@ -339,7 +378,7 @@ struct MathRow: View {
         let atoms = MathAtoms.build(nodes, fonts: fonts, size: size)
         MathFlow(wrap: false, gap: size * 0.25, lineGap: 0) {
             ForEach(atoms) { atom in
-                atom.view.layoutValue(key: SpaceBefore.self, value: atom.spaceBefore)
+                atom.view.layoutValue(key: BreakLevel.self, value: atom.level)
             }
         }
     }
@@ -407,11 +446,13 @@ struct BigOpView: View {
 
 // MARK: - Layouts
 
-struct SpaceBefore: LayoutValueKey {
-    static let defaultValue = false
+struct BreakLevel: LayoutValueKey {
+    static let defaultValue = 2
 }
 
-/// Places atoms left to right on shared baselines, wrapping to new lines when needed.
+/// Places atoms left to right on shared baselines. Wraps at natural break points
+/// (level 2) first; a term too wide for a line is split at plain spaces (level 1).
+/// Glued atoms (level 0) always stay together.
 struct MathFlow: Layout {
     var wrap: Bool
     var gap: CGFloat
@@ -419,23 +460,61 @@ struct MathFlow: Layout {
 
     private struct Item { let index: Int; let x: CGFloat; let baseline: CGFloat }
     private struct Row { var items: [Item] = []; var width: CGFloat = 0; var ascent: CGFloat = 0; var descent: CGFloat = 0 }
+    private struct Measured { let size: CGSize; let baseline: CGFloat; let level: Int }
 
     private func rows(maxWidth: CGFloat, subviews: Subviews) -> [Row] {
-        var rows = [Row()]
-        for (index, view) in subviews.enumerated() {
-            let size = view.sizeThatFits(.unspecified)
-            let baseline = view.dimensions(in: .unspecified)[VerticalAlignment.firstTextBaseline]
-            var space = view[SpaceBefore.self] && !rows[rows.count - 1].items.isEmpty ? gap : 0
-            if wrap, !rows[rows.count - 1].items.isEmpty, rows[rows.count - 1].width + space + size.width > maxWidth {
-                rows.append(Row())
-                space = 0
-            }
-            let x = rows[rows.count - 1].width + space
-            rows[rows.count - 1].items.append(Item(index: index, x: x, baseline: baseline))
-            rows[rows.count - 1].width = x + size.width
-            rows[rows.count - 1].ascent = max(rows[rows.count - 1].ascent, baseline)
-            rows[rows.count - 1].descent = max(rows[rows.count - 1].descent, size.height - baseline)
+        let m: [Measured] = subviews.map { view in
+            Measured(size: view.sizeThatFits(.unspecified),
+                     baseline: view.dimensions(in: .unspecified)[VerticalAlignment.firstTextBaseline],
+                     level: view[BreakLevel.self])
         }
+        var rows = [Row()]
+
+        func spacing(_ i: Int, startOfRow: Bool) -> CGFloat {
+            startOfRow || m[i].level == 0 ? 0 : gap
+        }
+        func width(_ range: Range<Int>) -> CGFloat {
+            range.reduce(0) { $0 + spacing($1, startOfRow: $1 == range.lowerBound) + m[$1].size.width }
+        }
+        func append(_ range: Range<Int>) {
+            for i in range {
+                let startOfRow = rows[rows.count - 1].items.isEmpty
+                let x = rows[rows.count - 1].width + spacing(i, startOfRow: startOfRow)
+                rows[rows.count - 1].items.append(Item(index: i, x: x, baseline: m[i].baseline))
+                rows[rows.count - 1].width = x + m[i].size.width
+                rows[rows.count - 1].ascent = max(rows[rows.count - 1].ascent, m[i].baseline)
+                rows[rows.count - 1].descent = max(rows[rows.count - 1].descent, m[i].size.height - m[i].baseline)
+            }
+        }
+        func groups(_ range: Range<Int>, minLevel: Int) -> [Range<Int>] {
+            var out: [Range<Int>] = []
+            var start = range.lowerBound
+            for i in range where i > range.lowerBound && m[i].level >= minLevel {
+                out.append(start..<i)
+                start = i
+            }
+            if start < range.upperBound { out.append(start..<range.upperBound) }
+            return out
+        }
+        func place(_ group: Range<Int>, splitLevel: Int) {
+            let row = rows[rows.count - 1]
+            let lead = row.items.isEmpty ? 0 : spacing(group.lowerBound, startOfRow: false)
+            if !wrap || row.width + lead + width(group) <= maxWidth {
+                append(group)
+                return
+            }
+            if !row.items.isEmpty {
+                rows.append(Row())
+                if width(group) <= maxWidth { append(group); return }
+            }
+            if splitLevel > 0 {
+                for piece in groups(group, minLevel: splitLevel) { place(piece, splitLevel: splitLevel - 1) }
+            } else {
+                append(group)
+            }
+        }
+
+        for group in groups(0..<m.count, minLevel: 2) { place(group, splitLevel: 1) }
         return rows
     }
 
