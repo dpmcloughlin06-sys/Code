@@ -11,11 +11,15 @@ struct NodeView: View {
         let isRoot = nodeID == store.rootID
 
         List {
-            Section {
-                Text(node.title)
-                    .font(.title3.weight(.bold))
-                    .fixedSize(horizontal: false, vertical: true)
-                    .listRowBackground(Color.clear)
+            // Menu screens use the nav bar title instead, so the list starts at the top.
+            if !node.isMenu {
+                Section {
+                    Text(node.title)
+                        .font(.title3.weight(.bold))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                }
             }
 
             if let formula = node.formula {
@@ -68,7 +72,6 @@ struct NodeView: View {
                             Text(choice.label)
                                 .font(.body)
                                 .fixedSize(horizontal: false, vertical: true)
-                                .padding(.vertical, 2)
                         }
                     }
                 } header: {
@@ -84,7 +87,8 @@ struct NodeView: View {
                 }
             }
         }
-        .navigationTitle(node.tag ?? "")
+        .listSectionSpacing(.compact)
+        .navigationTitle(node.isMenu ? node.title : (node.tag ?? ""))
         .toolbar {
             if !isRoot {
                 ToolbarItem(placement: .topBarTrailing) {
