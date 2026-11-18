@@ -1,0 +1,147 @@
+<!doctype html>
+<!--
+  Web renderer for a menu-tree app (see ../../SPEC.md). Works in any modern browser,
+  phone or desktop, any OS. No build step, no dependencies.
+
+  Data source, in order:
+    1. JSON embedded in <script id="tree-data"> (written by: tools/menutree.py export-web)
+    2. tree.json next to this file (serve the folder: python3 -m http.server)
+  Navigation uses the URL hash (#node_id), so browser back/forward work.
+  All content is inserted with textContent, never as HTML.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Menu App</title>
+<style>
+  :root {
+    --bg: #ffffff; --fg: #111418; --muted: #5b6470; --card: #f1f4f8;
+    --accent: #1f6feb; --accent-fg: #ffffff; --hl: #e3edff; --caution: #9a4a00; --step: #1a7f37;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0d1117; --fg: #e6edf3; --muted: #9aa4b2; --card: #161b22;
+      --accent: #388bfd; --accent-fg: #ffffff; --hl: #13233d; --caution: #f0a35e; --step: #3fb950;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 560px; margin: 0 auto; padding: 12px 16px 40px; }
+  header { display: flex; align-items: center; gap: 8px; min-height: 40px; }
+  header .tag { flex: 1; color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+  header button { background: var(--card); color: var(--fg); border: 0; border-radius: 8px;
+                  padding: 6px 10px; font: inherit; font-size: 14px; cursor: pointer; }
+  h1 { font-size: 22px; margin: 6px 0 12px; }
+  .highlight { background: var(--hl); border-radius: 10px; padding: 10px 12px; margin: 0 0 12px;
+               white-space: pre-wrap; font-weight: 600; overflow-wrap: anywhere; }
+  .highlight.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14px; }
+  .body { white-space: pre-wrap; margin: 0 0 12px; }
+  ol.steps { margin: 0 0 12px; padding-left: 0; list-style: none; counter-reset: s; }
+  ol.steps li { counter-increment: s; display: flex; gap: 8px; margin-bottom: 6px; white-space: pre-wrap; }
+  ol.steps li::before { content: counter(s) "."; color: var(--step); font-weight: 700; min-width: 1.4em; }
+  .caution { color: var(--caution); font-size: 14px; margin: 0 0 12px; white-space: pre-wrap; }
+  .caution::before { content: "⚠ "; }
+  nav.choices { display: grid; gap: 8px; }
+  nav.choices a, .home { display: block; text-decoration: none; background: var(--card); color: var(--fg);
+                         border-radius: 10px; padding: 12px 14px; }
+  nav.choices a:hover, nav.choices a:focus-visible { outline: 2px solid var(--accent); }
+  .home { text-align: center; background: var(--accent); color: var(--accent-fg); border: 0; width: 100%;
+          font: inherit; cursor: pointer; }
+  .error { color: var(--caution); }
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"></main>
+<script id="tree-data" type="application/json"></script>
+<script>
+(function () {
+  "use strict";
+  var app = document.getElementById("app");
+  var tree = null, byId = {};
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function currentId() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    return byId[id] ? id : tree.root;
+  }
+
+  function render() {
+    var id = currentId(), n = byId[id], isRoot = id === tree.root;
+    app.textContent = "";
+    document.title = isRoot ? tree.app.name : n.title + " · " + tree.app.name;
+
+    var header = el("header");
+    if (!isRoot) {
+      var back = el("button", null, "‹ Back");
+      back.onclick = function () { history.back(); };
+      header.appendChild(back);
+    }
+    header.appendChild(el("span", "tag", n.tag || (isRoot ? tree.app.name : "")));
+    if (!isRoot) {
+      var home = el("button", null, "⌂ Home");
+      home.onclick = function () { location.hash = ""; };
+      header.appendChild(home);
+    }
+    app.appendChild(header);
+
+    // Rendering order fixed by SPEC.md: title, highlight, body, steps, caution, choices.
+    app.appendChild(el("h1", null, n.title));
+    if (n.highlight) {
+      app.appendChild(el("div", "highlight" + (tree.app.highlightFont === "monospaced" ? " mono" : ""), n.highlight));
+    }
+    if (n.body) app.appendChild(el("p", "body", n.body));
+    if (n.steps) {
+      var ol = el("ol", "steps");
+      n.steps.forEach(function (s) { ol.appendChild(el("li", null, s)); });
+      app.appendChild(ol);
+    }
+    if (n.caution) app.appendChild(el("p", "caution", n.caution));
+    if (n.choices && n.choices.length) {
+      var nav = el("nav", "choices");
+      n.choices.forEach(function (c) {
+        var a = el("a", null, c.label);
+        a.href = "#" + encodeURIComponent(c.next);
+        nav.appendChild(a);
+      });
+      app.appendChild(nav);
+    } else if (!isRoot) {
+      var h = el("button", "home", "Home");
+      h.onclick = function () { location.hash = ""; };
+      app.appendChild(h);
+    }
+    window.scrollTo(0, 0);
+  }
+
+  function start(data) {
+    tree = data;
+    data.nodes.forEach(function (n) { byId[n.id] = n; });
+    window.addEventListener("hashchange", render);
+    render();
+  }
+
+  function fail(msg) {
+    app.textContent = "";
+    app.appendChild(el("p", "error", "Couldn't load the menu: " + msg));
+  }
+
+  var embedded = document.getElementById("tree-data").textContent.trim();
+  if (embedded) {
+    try { start(JSON.parse(embedded)); } catch (e) { fail(e.message); }
+  } else {
+    fetch("tree.json").then(function (r) {
+      if (!r.ok) throw new Error("tree.json: HTTP " + r.status);
+      return r.json();
+    }).then(start).catch(function (e) { fail(e.message + " (serve this folder over http, or use export-web)"); });
+  }
+})();
+</script>
+</body>
+</html>

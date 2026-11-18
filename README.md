@@ -37,3 +37,9 @@ Don't edit `tutor.json` by hand. Edit `tools/build_tree.py`, then:
 python3 tools/build_tree.py        # rebuilds tutor.json; fails on broken links / unreachable screens
 python3 tools/verify_examples.py   # checks examples and formulas with SymPy (pip install sympy)
 ```
+
+## Reusable template
+
+`menu-app-template/` generalizes this app's structure to any subject, OS and
+device: one `tree.json` data file, a spec, a validator, and web, terminal and
+SwiftUI renderers. Start with `menu-app-template/CLAUDE.md`.

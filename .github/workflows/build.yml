@@ -41,3 +41,33 @@ jobs:
         with:
           name: build-logs
           path: "*.log"
+
+  template-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: menu-app-template
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install optional schema checker
+        run: pip install jsonschema
+      - name: Rebuild example content (must be committed)
+        run: python3 content/example_tree.py && git diff --exit-code .
+      - name: Tests
+        run: python3 tests/run_tests.py
+
+  template-swiftui:
+    runs-on: macos-15
+    defaults:
+      run:
+        working-directory: menu-app-template/renderers/swiftui
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build template app for watchOS Simulator
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project MenuApp.xcodeproj -target MenuApp -configuration Debug \
+            -sdk watchsimulator \
+            CODE_SIGNING_ALLOWED=NO | tee template.log | grep -E "error:|warning:|BUILD" || true
+          grep -q "BUILD SUCCEEDED" template.log

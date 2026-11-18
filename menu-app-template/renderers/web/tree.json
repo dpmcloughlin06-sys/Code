@@ -1,0 +1,181 @@
+{
+ "schemaVersion": 1,
+ "app": {
+  "name": "Git Quick Ref",
+  "subject": "Git version control",
+  "highlightFont": "monospaced",
+  "description": "Commands and processes for everyday Git work."
+ },
+ "root": "root",
+ "nodes": [
+  {
+   "id": "root",
+   "title": "What are you doing?",
+   "tag": "Git",
+   "choices": [
+    {
+     "label": "Start a repository",
+     "next": "start"
+    },
+    {
+     "label": "Save work (commit)",
+     "next": "commit"
+    },
+    {
+     "label": "Branches",
+     "next": "branches"
+    },
+    {
+     "label": "Sync with a remote",
+     "next": "remote"
+    },
+    {
+     "label": "Undo something",
+     "next": "undo"
+    },
+    {
+     "label": "★ Tips & rules",
+     "next": "tips"
+    }
+   ]
+  },
+  {
+   "id": "start",
+   "title": "Start a repository",
+   "tag": "Setup",
+   "highlight": "git init\ngit clone <url>\ngit config --global user.name \"Name\"\ngit config --global user.email \"you@example.com\"",
+   "steps": [
+    "New project: git init in its folder.",
+    "Existing project online: git clone <url>.",
+    "Set name and email once per machine."
+   ]
+  },
+  {
+   "id": "commit",
+   "title": "Save work",
+   "tag": "Commit",
+   "highlight": "git status\ngit add <file>    (-A = all)\ngit commit -m \"message\"\ngit log --oneline",
+   "steps": [
+    "Check what changed: git status.",
+    "Stage what belongs together.",
+    "Commit with a message that says why."
+   ],
+   "caution": "Commit small, related changes. One idea per commit."
+  },
+  {
+   "id": "branches",
+   "title": "Branches",
+   "tag": "Branch",
+   "highlight": "git switch -c <name>    new + switch\ngit switch <name>       switch\ngit merge <name>        into current\ngit branch -d <name>    delete merged",
+   "steps": [
+    "Branch before starting a change.",
+    "Commit on the branch.",
+    "Switch to the target branch, then merge."
+   ],
+   "choices": [
+    {
+     "label": "Merge conflict?",
+     "next": "conflict"
+    }
+   ]
+  },
+  {
+   "id": "conflict",
+   "title": "Merge conflict",
+   "tag": "Branch",
+   "steps": [
+    "Open each file git status lists as conflicted.",
+    "Keep the right lines between <<<<<<< and >>>>>>>, delete the markers.",
+    "git add <file> for each, then git commit."
+   ],
+   "caution": "git merge --abort returns to before the merge."
+  },
+  {
+   "id": "remote",
+   "title": "Sync with a remote",
+   "tag": "Remote",
+   "highlight": "git remote -v\ngit fetch\ngit pull\ngit push -u origin <branch>",
+   "body": "fetch downloads without changing your files; pull = fetch + merge.",
+   "caution": "Pull before you push to avoid a rejected push."
+  },
+  {
+   "id": "undo",
+   "title": "Undo what?",
+   "tag": "Undo",
+   "choices": [
+    {
+     "label": "Unstage a file",
+     "next": "undo_unstage"
+    },
+    {
+     "label": "Discard edits to a file",
+     "next": "undo_discard"
+    },
+    {
+     "label": "Fix the last commit",
+     "next": "undo_amend"
+    },
+    {
+     "label": "Undo a pushed commit",
+     "next": "undo_revert"
+    }
+   ]
+  },
+  {
+   "id": "undo_unstage",
+   "title": "Unstage a file",
+   "tag": "Undo",
+   "highlight": "git restore --staged <file>",
+   "body": "The edits stay in the file; only the staging is undone."
+  },
+  {
+   "id": "undo_discard",
+   "title": "Discard edits",
+   "tag": "Undo",
+   "highlight": "git restore <file>",
+   "caution": "Uncommitted edits are lost for good."
+  },
+  {
+   "id": "undo_amend",
+   "title": "Fix the last commit",
+   "tag": "Undo",
+   "highlight": "git commit --amend -m \"new message\"",
+   "body": "Stage forgotten files first; they join the last commit.",
+   "caution": "Only before pushing: amending rewrites history."
+  },
+  {
+   "id": "undo_revert",
+   "title": "Undo a pushed commit",
+   "tag": "Undo",
+   "highlight": "git revert <sha>",
+   "body": "Makes a new commit that reverses the old one. Safe on shared branches."
+  },
+  {
+   "id": "tips",
+   "title": "Tips & rules",
+   "tag": "Tips",
+   "choices": [
+    {
+     "label": "Habits",
+     "next": "tips_habits"
+    },
+    {
+     "label": "Reading history",
+     "next": "tips_history"
+    }
+   ]
+  },
+  {
+   "id": "tips_habits",
+   "title": "Habits",
+   "tag": "Tips",
+   "body": "Run git status before and after anything.\nNever commit secrets; list them in .gitignore.\nDon't rewrite history others have pulled."
+  },
+  {
+   "id": "tips_history",
+   "title": "Reading history",
+   "tag": "Tips",
+   "highlight": "git log --oneline --graph\ngit show <sha>\ngit diff            unstaged\ngit diff --staged   staged"
+  }
+ ]
+}
