@@ -19,11 +19,11 @@ checked for the target.
 
 ## How it works
 
-- `Calc3Tutor/tutor.json` is the decision tree (121 screens). Each screen has a
+- `Calc3Tutor/tutor.json` is the decision tree (133 screens). Each screen has a
   title, body, optional formula, optional warning, and either choices
   (narrowing questions), a Next button, or a finish screen.
 - The house button returns to the start; the back chevron retraces your path.
-- Root menu: **Solve a problem** (guided), **Jump to a topic**, **Formula
+- Root menu: **Solve a problem** (guided), **Practice exam Q1–40 map** (jump straight to the method for each question), **Jump to a topic**, **Formula
   sheet**, **Integration toolkit**, **Final answer check**.
 
 ## Editing content

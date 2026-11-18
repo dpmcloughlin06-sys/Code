@@ -47,6 +47,7 @@ PARAM_BODY = (
     "Clockwise: (a cos t, −a sin t), or run t backward.\n"
     "Ellipse: (a cos t, b sin t).\n"
     "Graph y = g(x), x: a→b: (t, g(t)), t: a→b.\n"
+    "Graph x = g(y) (e.g. x = y²+4): (g(t), t), t from start y to end y.\n"
     "Polygon / piecewise path: do each piece, then add.")
 PARAM_WARN = "Direction matters for work: start point at the lower t."
 
@@ -55,6 +56,7 @@ N("root", "Calc 3 Tutor", "Exam 3",
   body="Answer a few questions and I'll walk you to the exact setup. You do the arithmetic.",
   choices=[
       ("Solve a problem", "classify"),
+      ("Practice exam Q1–40 map", "exam_map"),
       ("Jump to a topic", "topics"),
       ("Formula sheet", "fs_menu"),
       ("Integration toolkit", "tk_menu"),
@@ -92,6 +94,9 @@ N("classify", "What do you see?", "Start",
       ("A closed curve in the plane (∮)", "green_start"),
       ("Is F conservative? Find a potential f", "cons_start"),
       ("grad, div, curl, Laplacian", "ops_start"),
+      ("Convert a point (cyl/sph → x,y,z)", "point_convert"),
+      ("Describe/sketch a solid from inequalities", "describe_solid"),
+      ("Cross-section area A(x) or A(y)", "cross_section"),
       ("Concept / pick-the-graph / which integral", "concept_start"),
       ("Not sure which method", "method_table"),
   ])
@@ -179,6 +184,7 @@ N("rect_eval", "Rectangle ∬", "15.1",
       ("f = g(x)·h(y) (splits)", "rect_product"),
       ("Has x·e^(xy), x·cos(xy), etc.", "rect_order"),
       ("Plain polynomial / other", "eval_iter"),
+      ("Has √(R²−x²) or √(R²−y²): use geometry", "geom_volume"),
   ])
 
 N("rect_product", "Product shortcut", "15.1",
@@ -301,7 +307,7 @@ N("reverse_order", "Reverse the order", "15.2",
       "2. Sketch: inner curves + outer lines; shade.\n"
       "3. Label every corner (solve intersections).\n"
       "4. New OUTER variable: its min and max over the whole region (numbers).\n"
-      "5. Solve each boundary curve for the new INNER variable.\n"
+      "5. Solve each boundary curve for the new INNER variable (x = arcsin y ⇔ y = sin x; x = ln y ⇔ y = eˣ; y = x² ⇔ x = √y).\n"
       "6. Draw a line in the new direction: inner bound = curve you enter → curve you exit.\n"
       "7. If the entering/exiting curve changes, split."),
   warn="Never just swap dx and dy. The region stays the same; the bounds change.",
@@ -326,6 +332,7 @@ N("polar_region", "Polar: describe D", "15.3",
       ("Ring between two circles", "polar_ring"),
       ("Circle through origin (x²+y²=2ax or 2ay)", "polar_offcenter"),
       ("Bounded by a line like y=c or x=c", "polar_line"),
+      ("Inside a polar curve r = g(θ)", "polar_curve_area"),
   ])
 
 N("polar_disk", "Full disk", "15.3",
@@ -374,6 +381,7 @@ N("polar_from_cart", "Cartesian → polar", "15.3",
       "Clues: y from 0 to √(R²−x²) ⇒ upper half disk radius R.\n"
       "x from −√(R²−y²) to √(R²−y²) ⇒ full width of a disk.\n"
       "y from x to √(2−x²) ⇒ wedge between line y=x and circle r=√2.\n"
+      "y from 0 to √(2ax − x²), x from 0 to 2a ⇒ upper half of x²+y² = 2ax ⇒ r ≤ 2a cosθ, 0 ≤ θ ≤ π/2.\n"
       "2. Write polar bounds for that region."),
   choices=[("Write the polar bounds", "polar_region"), ("Bounds done, convert integrand", "polar_convert")])
 
@@ -467,6 +475,7 @@ N("shape3d", "What does the solid look like?", "Setup",
   choices=[
       ("Box, planes, tetrahedron, parabolic cylinder", "triple_setup"),
       ("Cylinder, paraboloid, cone with flat top, x²+y²", "cyl_setup"),
+      ("Paraboloid around x- or y-axis (x = y²+z²)", "cyl_other_axis"),
       ("Sphere, ball, ice-cream cone, x²+y²+z²", "sph_region"),
       ("Not sure", "coord_choice"),
   ])
@@ -532,7 +541,7 @@ N("triple_reorder_ex", "Example", "15.6",
       "y: 0 → 1\n"
       "⇒ ∫0→1 ∫0→(1−y) ∫0→(1−y−z) f dx dz dy\n"
       "Curved example: z ≤ 1−y², x from 0 to 2: shadow in yz-plane is under the parabola."),
-  next="final_check", next_label="Done")
+  next="six_orders", next_label="All six orders example")
 
 # ---------------------------------------------------------------- 15.7
 N("cyl_setup", "Cylindrical setup", "15.7",
@@ -545,7 +554,10 @@ N("cyl_setup", "Cylindrical setup", "15.7",
       "sphere → z = ±√(R² − r²)\n"
       "plane z = y → z = r sinθ"),
   formula="dV = r dz dr dθ",
-  next="cyl_bounds")
+  choices=[
+      ("Round around the z-axis (usual)", "cyl_bounds"),
+      ("Round around x- or y-axis (x = y²+z²)", "cyl_other_axis"),
+  ])
 
 N("cyl_bounds", "Cylindrical bounds", "15.7",
   body=(
@@ -622,7 +634,8 @@ N("sph_shifted", "Shifted sphere", "15.8",
       "x²+y²+z² = 2az ⇒ ρ² = 2aρ cosφ ⇒ ρ = 2a cosφ.\n"
       "(Sphere radius a, center (0,0,a), touches origin.)\n"
       "ρ: 0 → 2a cosφ. Whole thing: φ 0→π/2.\n"
-      "With cone z = √(x²+y²) also: φ 0→π/4."),
+      "Inside sphere AND above cone z = √(x²+y²): φ 0→π/4.\n"
+      "Inside sphere but OUTSIDE (below) that cone: φ π/4→π/2."),
   formula="0 ≤ ρ ≤ 2a cosφ",
   warn="The ρ bound depends on φ, so integrate ρ first.",
   next="sph_integrand")
@@ -665,7 +678,8 @@ N("sph_eval", "Evaluate", "15.8",
       "∫ cosⁿφ sinφ dφ = −cosⁿ⁺¹φ/(n+1).\n"
       "∫0→π sinφ dφ = 2;  ∫0→π/2 sinφ dφ = 1;\n"
       "∫0→π/4 sinφ dφ = 1 − √2/2.\n"
-      "∫0→2π dθ = 2π."),
+      "∫0→2π dθ = 2π.\n"
+      "e^(x²+y²+z²) = e^(ρ²): with ρ² from dV, ∫ρ³e^(ρ²) dρ: u = ρ², then by parts."),
   choices=[("Find a centroid next", "solid_centroid"), ("Done → check", "final_check")])
 
 # ---------------------------------------------------------------- mass & centroid
@@ -690,7 +704,11 @@ N("solid_centroid", "Solid centroid", "Mass",
       "4. z̄ = M_xy / m."),
   formula="z̄ = (1/m) ∭ z δ dV",
   warn="z̄ can't be 0 if the solid is entirely above the xy-plane. z̄ must be between the lowest and highest z of the solid.",
-  choices=[("Worked example: cone in sphere", "centroid_ex"), ("Set up bounds", "shape3d")])
+  choices=[
+      ("Example: cone below sphere at origin", "centroid_ex2"),
+      ("Example: cone in shifted sphere", "centroid_ex"),
+      ("Set up bounds", "shape3d"),
+  ])
 
 N("centroid_ex", "Cone in shifted sphere", "Mass",
   body=(
@@ -771,7 +789,7 @@ N("work_ex", "Example", "16.2",
   next="final_check", next_label="Check answer")
 
 N("dx_line", "∫ f dx or ∫ f dy", "16.2",
-  body="Parameterize, then dx = x'(t) dt (or dy = y'(t) dt). No speed factor.",
+  body="Parameterize, then dx = x'(t) dt (or dy = y'(t) dt). No speed factor.\nShortcut: ∫ g(x) dx alone depends only on the x-endpoints: = G(x_end) − G(x_start).",
   formula="∫C f dx = ∫a→b f(r(t)) x'(t) dt",
   next="param_dx")
 
@@ -886,6 +904,7 @@ N("ops_start", "Which operator?", "16.5",
       ("Laplacian ∇²f", "op_lap"),
       ("Is this expression meaningful?", "op_types"),
       ("Identities: curl grad, div curl", "op_ident"),
+      ("Position vector r and r = |r|", "op_rvec"),
   ])
 
 N("op_grad", "Gradient", "16.5",
@@ -940,6 +959,8 @@ N("concept_start", "What kind of question?", "Concepts",
       ("Vector field picture: div or curl sign", "concept_field"),
       ("Line integral sign from a picture", "concept_line_sign"),
       ("Which coordinate system?", "coord_choice"),
+      ("Pick the integral for a pictured region", "concept_pick_region"),
+      ("Pick the figure: field arrows on a curve", "concept_field_curve"),
   ])
 
 N("concept_which_integral", "Match integral to solid", "Concepts",
@@ -1066,6 +1087,7 @@ N("tk_values", "Standard values", "Toolkit",
       "∫0→π/2 sinφ dφ = 1\n"
       "∫0→π/2 cosθ dθ = 1\n"
       "∫0→2π cosθ dθ = 0 = ∫0→2π sinθ dθ\n"
+      "∫0→π/2 sin³φ dφ = 2/3  (sin³ = (1 − cos²)·sin, u = cos)\n"
       "∫ 1/(1+x²) = arctan x\n"
       "∫ 1/√(1−x²) = arcsin x\n"
       "cos(π/4) = sin(π/4) = √2/2\n"
@@ -1087,6 +1109,161 @@ N("final_check", "Before you box it", "Check",
       "☐ ½ for triangle area\n"
       "☐ Radians, not degrees"))
 
+
+
+# ---------------------------------------------------------------- added from practice exam formats
+N("exam_map", "Practice exam map", "Exam 3",
+  body="Find your question number, then follow the method.",
+  choices=[
+      ("Q1–2 iterated ∫ (constant bounds)", "rect_eval"),
+      ("Q3 cross-section areas, volume", "cross_section"),
+      ("Q4 ∬√(R²−x²): geometry", "geom_volume"),
+      ("Q5, Q11 reverse the order", "reverse_order"),
+      ("Q6–9 Type I / Type II regions", "gen_setup"),
+      ("Q10 volume under plane over region", "vol_between"),
+      ("Q12 pick polar ∫ for picture", "concept_pick_region"),
+      ("Q13, Q15 polar evaluate / volume", "polar_region"),
+      ("Q14 area inside r = g(θ)", "polar_curve_area"),
+      ("Q16 Cartesian → polar", "polar_from_cart"),
+      ("Q17 surface area of a plane", "sa_plane"),
+      ("Q18, Q21, Q22 evaluate ∭", "triple_setup"),
+      ("Q19, Q23 paraboloid x = a(y²+z²)", "cyl_other_axis"),
+      ("Q20, Q24 orders of a ∭", "triple_reorder"),
+      ("Q25, Q28 convert a point", "point_convert"),
+      ("Q26, Q29 describe a solid", "describe_solid"),
+      ("Q27 cylindrical ∭", "cyl_setup"),
+      ("Q30 sphere & cone inequalities", "sph_shifted"),
+      ("Q31 shell, set up spherical", "sph_shell"),
+      ("Q32 spherical ∭ (first octant)", "sph_ball"),
+      ("Q33 volume & centroid, cone/sphere", "solid_centroid"),
+      ("Q34 ∫ f dx along x = g(y)", "dx_line"),
+      ("Q35, Q37 work ∫ F·dr", "work_direct"),
+      ("Q36 work + pick the figure", "concept_field_curve"),
+      ("Q38 Green: direct and theorem", "green_both"),
+      ("Q39 curl & divergence", "op_curl"),
+      ("Q40 ∇r, ∇(1/r), ∇ ln r", "op_rvec"),
+  ])
+
+N("cross_section", "Cross-section area", "15.1",
+  body=(
+      "Solid under z = f(x,y) over a rectangle.\n"
+      "Slice perpendicular to the x-axis at x = k: area A(k) = ∫ f(k, y) dy over the y-range.\n"
+      "Slice perpendicular to the y-axis at y = k: A(k) = ∫ f(x, k) dx over the x-range.\n"
+      "Volume = ∫ A(x) dx = ∫ A(y) dy (same answer both ways).\n"
+      "Ex: z = xy over [0,2]×[1,3]: A(x) = ∫1→3 xy dy = 4x; V = ∫0→2 4x dx = 8."),
+  formula="A(x) = ∫c→d f(x,y) dy,   V = ∫a→b A(x) dx",
+  warn="In A(x), x is a fixed number: only y is integrated.",
+  next="final_check", next_label="Check answer")
+
+N("geom_volume", "Integral as a volume", "15.1",
+  body=(
+      "If f ≥ 0 and the solid is a known shape, use geometry.\n"
+      "z = √(R² − x²) ⇒ x² + z² = R², z ≥ 0: half of a circular cylinder of radius R lying along the y-axis.\n"
+      "Volume = (½πR²) × (length along y).\n"
+      "Ex: ∬ √(9 − y²) dA over [0,4]×[−3,3] = ½π(3²)·4 = 18π.\n"
+      "Need the x-range to cover the whole −R to R, else it's only part of the half-disk."),
+  formula="V = ½πR² · L",
+  next="final_check", next_label="Check answer")
+
+N("polar_curve_area", "Area inside r = g(θ)", "15.3",
+  body=(
+      "r from 0 to the curve g(θ); θ over the sweep that traces the region once.\n"
+      "Inner integral ∫0→g r dr = ½g(θ)².\n"
+      "Read θ-limits from the picture: where does the curve start and end? (e.g. a spiral r = √θ starts at the origin at θ = 0.)\n"
+      "Ex: cardioid r = 1 + cosθ, θ 0→2π: A = ½∫(1+cosθ)² dθ = 3π/2."),
+  formula="A = ∫α→β ∫0→g(θ) r dr dθ = ∫α→β ½ g(θ)² dθ",
+  next="final_check", next_label="Check answer")
+
+N("cyl_other_axis", "Round around x-axis", "15.7",
+  body=(
+      "x = a(y² + z²) is a paraboloid opening along the x-axis.\n"
+      "Use polar in the yz-plane: y = r cosθ, z = r sinθ, y²+z² = r².\n"
+      "x: from a r² up to the plane x = c.\n"
+      "Edge: a r² = c ⇒ r = √(c/a). θ: 0 → 2π.\n"
+      "dV = r dx dr dθ.\n"
+      "Ex: ∭ x dV, x = y²+z², x = 1:\n"
+      "∫0→2π ∫0→1 ∫r²→1 x·r dx dr dθ = π/3."),
+  formula="∫0→2π ∫0→√(c/a) ∫ar²→c f · r dx dr dθ",
+  warn="Integrand x stays x (it's the axis variable). Only y, z become r, θ.",
+  next="eval_iter")
+
+N("six_orders", "All six orders", "15.6",
+  body=(
+      "Solid: y = x², z = 0, y + 2z = 4.\n"
+      "Ranges: y 0→4, x ±√y, z 0→(4−y)/2.\n"
+      "dz dy dx: x −2→2, y x²→4, z 0→(4−y)/2\n"
+      "dz dx dy: y 0→4, x −√y→√y, z 0→(4−y)/2\n"
+      "dx dz dy: y 0→4, z 0→(4−y)/2, x −√y→√y\n"
+      "dx dy dz: z 0→2, y 0→4−2z, x −√y→√y\n"
+      "dy dz dx: x −2→2, z 0→(4−x²)/2, y x²→4−2z\n"
+      "dy dx dz: z 0→2, x ±√(4−2z), y x²→4−2z\n"
+      "Shadows: xy under y=4; yz triangle; xz under z=(4−x²)/2."),
+  warn="Eliminate the inner variable to get the shadow: set y = x² into y + 2z = 4 ⇒ z = (4 − x²)/2.",
+  next="final_check", next_label="Done")
+
+N("point_convert", "Convert a point", "15.7/15.8",
+  body=(
+      "Cylindrical (r, θ, z):\nx = r cosθ, y = r sinθ, z = z.\n"
+      "Ex: (2, π/3, 1) → (1, √3, 1).\n\n"
+      "Spherical, WebAssign/Stewart order (ρ, θ, φ):\nx = ρ sinφ cosθ, y = ρ sinφ sinθ, z = ρ cosφ.\n"
+      "Ex: (4, π/2, π/3) → (0, 2√3, 2).\n\n"
+      "Back to cyl: r = √(x²+y²), tanθ = y/x (check quadrant).\n"
+      "Back to sph: ρ = √(x²+y²+z²), cosφ = z/ρ."),
+  warn="Spherical points are written (ρ, θ, φ): θ is SECOND. φ = π/2 means z = 0.",
+  next="final_check", next_label="Done")
+
+N("describe_solid", "Describe a solid", "15.7/15.8",
+  body=(
+      "θ range → which x, y signs:\n"
+      "0→π/2: x ≥ 0, y ≥ 0.  0→π: y ≥ 0, x any sign.\n"
+      "−π/2→π/2: x ≥ 0.\n"
+      "z sign: r ≤ z or 0 ≤ φ ≤ π/2 ⇒ z ≥ 0.\n"
+      "Top / bottom surfaces:\n"
+      "z = c plane;  z = r cone;  ρ = c sphere;  φ = c cone (c < π/2 opens up).\n"
+      "Slice in the xz-plane: set θ = 0 (and θ = π for x < 0). yz-plane: θ = π/2. Draw the 2D shape you get (triangle, sector, quarter-disk…)."),
+  warn="ρ ≤ c with φ ≤ φ0: top is part of a SPHERE, bottom part of a CONE.",
+  next="final_check", next_label="Done")
+
+N("centroid_ex2", "Cone below origin sphere", "Mass",
+  body=(
+      "Above z = √(x²+y²), below x²+y²+z² = R². Ex R = 2.\n"
+      "ρ 0→R, φ 0→π/4, θ 0→2π.\n"
+      "V = 2π·(R³/3)·(1 − √2/2)\n"
+      "  R=2: (16π/3)(1 − √2/2)\n"
+      "M = 2π·(R⁴/4)·∫0→π/4 sinφcosφ dφ = 2π·(R⁴/4)·(1/4)\n"
+      "  R=2: 2π\n"
+      "z̄ = M/V; x̄ = ȳ = 0.\n"
+      "R=2: z̄ = 3/(8(1 − √2/2)) ≈ 1.28"),
+  next="final_check", next_label="Check answer")
+
+N("concept_pick_region", "Pick integral for a picture", "Concepts",
+  body=(
+      "1. Round edges centered at origin ⇒ polar.\n"
+      "2. Read r: 0 to the radius. Read θ: from the start ray to the end ray, going counterclockwise (can start negative, e.g. −π/4 → 3π/4).\n"
+      "3. Correct answer must have f(r cosθ, r sinθ) AND the extra r.\n"
+      "Reject: f(r,θ) without conversion, missing r, or Cartesian bounds that don't match the picture."),
+  choices=[("Angle reference", "polar_angles"), ("Done", "final_check")])
+
+N("concept_field_curve", "Field arrows on a curve", "Concepts",
+  body=(
+      "1. Curve shape: plot r(t) at t = 0, ½, 1 and compare. Ex (t³, t²): at t = ½ the point is (0.125, 0.25), so y > x early and the curve leaves the origin steeply.\n"
+      "2. For each listed t: point = r(t), arrow = F at that point.\n"
+      "3. Arrow direction: slope = F_y/F_x. Compare to the pictures.\n"
+      "4. Arrow length grows with |F|."),
+  warn="The arrow is F at the point, not the tangent r'(t).",
+  next="work_direct", next_label="Part (a): work")
+
+N("op_rvec", "r = ⟨x,y,z⟩, r = |r|", "16.5",
+  body=(
+      "∇r = r/r   (unit radial vector)\n"
+      "∇×r = 0\n"
+      "∇·r = 3\n"
+      "∇(1/r) = −r/r³\n"
+      "∇(ln r) = r/r²\n"
+      "General: ∇(g(r)) = g'(r)·r/r\n"
+      "So ∇(rⁿ) = n rⁿ⁻² r."),
+  warn="Bold r is the vector, plain r is its length. ∇ of a scalar gives a vector: answers must be vectors.",
+  next="final_check", next_label="Done")
 
 # ---------------------------------------------------------------- validate + write
 def validate():

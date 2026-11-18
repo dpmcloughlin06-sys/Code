@@ -26,6 +26,36 @@ checks["green_ex direct 2/3"]=(direct,Rational(2,3))
 # potentials
 f2=x**2*y+x+y**3; checks["potential2"]=((diff(f2,x),diff(f2,y)),(2*x*y+1,x**2+3*y**2))
 f3=x*y+y*z; checks["potential3"]=((diff(f3,x),diff(f3,y),diff(f3,z)),(y,x+z,y))
+
+# ---- examples added from practice-exam formats
+checks["cross_section A(x)=4x"]=(integrate(x*y,(y,1,3)),4*x)
+checks["cross_section V=8"]=(integrate(4*x,(x,0,2)),8)
+checks["geom_volume 18pi"]=(integrate(integrate(sqrt(9-y**2),(y,-3,3)),(x,0,4)),18*pi)
+checks["cardioid 3pi/2"]=(integrate((1+cos(th))**2/2,(th,0,2*pi)),3*pi/2)
+checks["cyl_other_axis pi/3"]=(2*pi*integrate(integrate(x*r,(x,r**2,1)),(r,0,1)),pi/3)
+vol=lambda inner,mid,outer: integrate(integrate(integrate(1,inner),mid),outer)
+V0=vol((z,0,(4-y)/2),(y,x**2,4),(x,-2,2))
+orders=[vol((z,0,(4-y)/2),(x,-sqrt(y),sqrt(y)),(y,0,4)),
+        vol((x,-sqrt(y),sqrt(y)),(z,0,(4-y)/2),(y,0,4)),
+        vol((x,-sqrt(y),sqrt(y)),(y,0,4-2*z),(z,0,2)),
+        vol((y,x**2,4-2*z),(z,0,(4-x**2)/2),(x,-2,2)),
+        vol((y,x**2,4-2*z),(x,-sqrt(4-2*z),sqrt(4-2*z)),(z,0,2))]
+checks["six_orders agree"]=(tuple(orders),tuple([V0]*5))
+P_=lambda rr,tt,pp:(rr*sin(pp)*cos(tt),rr*sin(pp)*sin(tt),rr*cos(pp))
+checks["point cyl (2,pi/3,1)"]=((2*cos(pi/3),2*sin(pi/3),1),(1,sqrt(3),1))
+checks["point sph (4,pi/2,pi/3)"]=(P_(4,pi/2,pi/3),(0,2*sqrt(3),2))
+R=2
+Vc=2*pi*integrate(integrate(rho**2*sin(ph),(rho,0,R)),(ph,0,pi/4))
+Mc=2*pi*integrate(integrate(rho**3*sin(ph)*cos(ph),(rho,0,R)),(ph,0,pi/4))
+checks["centroid_ex2 V"]=(Vc,Rational(16,3)*pi*(1-sqrt(2)/2))
+checks["centroid_ex2 M"]=(Mc,2*pi)
+checks["centroid_ex2 zbar"]=(Mc/Vc,3/(8*(1-sqrt(2)/2)))
+X,Y,Z=symbols('X Y Z',positive=True); RR=sqrt(X**2+Y**2+Z**2); v=Matrix([X,Y,Z])
+grad=lambda g: Matrix([diff(g,X),diff(g,Y),diff(g,Z)])
+checks["grad r = r/r"]=(tuple(grad(RR)),tuple(v/RR))
+checks["grad 1/r = -r/r^3"]=(tuple(grad(1/RR)),tuple(-v/RR**3))
+checks["grad ln r = r/r^2"]=(tuple(grad(log(RR))),tuple(v/RR**2))
+checks["sin^3 0..pi/2"]=(integrate(sin(ph)**3,(ph,0,pi/2)),Rational(2,3))
 bad=0
 for k,(a,b) in checks.items():
     ok = simplify(Matrix(a)-Matrix(b))==zeros(len(a),1) if isinstance(a,(tuple,list)) else simplify(a-b)==0
