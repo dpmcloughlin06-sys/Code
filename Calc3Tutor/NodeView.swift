@@ -1,67 +1,92 @@
 import SwiftUI
 
-/// One screen: equations first, then the short process, the pitfall, and submenu buttons.
+/// One screen, drawn as a native watch list so each part sits on its own card:
+/// title · Equations · notes · Process · caution · buttons.
 struct NodeView: View {
     @EnvironmentObject private var store: TutorStore
     let nodeID: String
 
     var body: some View {
         let node = store.node(nodeID)
+        let isRoot = nodeID == store.rootID
 
-        ScrollView {
-            VStack(alignment: .leading, spacing: 8) {
+        List {
+            Section {
                 Text(node.title)
-                    .font(.headline)
+                    .font(.title3.weight(.bold))
                     .fixedSize(horizontal: false, vertical: true)
+                    .listRowBackground(Color.clear)
+            }
 
-                if let formula = node.formula {
-                    Text(formula)
-                        .font(.footnote.weight(.semibold))
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(6)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color.blue.opacity(0.25), in: RoundedRectangle(cornerRadius: 8))
+            if let formula = node.formula {
+                Section {
+                    FormulaLines(text: formula)
+                } header: {
+                    SectionLabel("Equations")
                 }
+            }
 
-                if let body = node.body {
+            if let body = node.body {
+                Section {
                     Text(body)
-                        .font(.footnote)
+                        .font(.body)
+                        .lineSpacing(2)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+            }
 
-                if let steps = node.steps {
-                    VStack(alignment: .leading, spacing: 4) {
-                        ForEach(steps.indices, id: \.self) { i in
-                            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                                Text("\(i + 1).")
-                                    .foregroundStyle(.green)
-                                    .monospacedDigit()
-                                Text(steps[i])
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                            .font(.footnote)
-                        }
+            if let steps = node.steps {
+                Section {
+                    ForEach(steps.indices, id: \.self) { i in
+                        StepRow(number: i + 1, text: steps[i])
                     }
+                } header: {
+                    SectionLabel("Process")
                 }
+            }
 
-                if let warn = node.warn {
+            if let warn = node.warn {
+                Section {
                     Label {
                         Text(warn).fixedSize(horizontal: false, vertical: true)
                     } icon: {
                         Image(systemName: "exclamationmark.triangle.fill")
                     }
-                    .font(.caption2)
+                    .font(.footnote.weight(.medium))
                     .foregroundStyle(.orange)
+                    .listRowBackground(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Color.orange.opacity(0.18))
+                    )
                 }
-
-                actions(for: node)
-                    .padding(.top, 4)
             }
-            .padding(.horizontal, 2)
+
+            if let choices = node.choices, !choices.isEmpty {
+                Section {
+                    ForEach(choices, id: \.self) { choice in
+                        NavigationLink(value: choice.next) {
+                            Text(choice.label)
+                                .font(.body)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .padding(.vertical, 2)
+                        }
+                    }
+                } header: {
+                    if !node.isMenu { SectionLabel("More") }
+                }
+            } else if !isRoot {
+                Section {
+                    Button { store.goHome() } label: {
+                        Label("Problem types", systemImage: "square.grid.2x2")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .foregroundStyle(.tint)
+                }
+            }
         }
         .navigationTitle(node.tag ?? "")
         .toolbar {
-            if nodeID != store.rootID {
+            if !isRoot {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { store.goHome() } label: {
                         Image(systemName: "house.fill")
@@ -71,25 +96,60 @@ struct NodeView: View {
             }
         }
     }
+}
 
-    @ViewBuilder
-    private func actions(for node: TutorNode) -> some View {
-        if let choices = node.choices, !choices.isEmpty {
-            VStack(spacing: 6) {
-                ForEach(choices, id: \.self) { choice in
-                    NavigationLink(value: choice.next) {
-                        Text(choice.label)
-                            .font(.footnote)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-            }
-        } else if nodeID != store.rootID {
-            Button { store.goHome() } label: {
-                Label("Problem types", systemImage: "list.bullet")
-                    .frame(maxWidth: .infinity)
+/// Small uppercase label above a card.
+private struct SectionLabel: View {
+    let text: String
+    init(_ text: String) { self.text = text }
+
+    var body: some View {
+        Text(text.uppercased())
+            .font(.caption2.weight(.semibold))
+            .foregroundStyle(.secondary)
+    }
+}
+
+/// Equations one per line with breathing room. Lines that start with spaces are
+/// continuations of the line above and are indented.
+private struct FormulaLines: View {
+    let text: String
+
+    var body: some View {
+        let lines = text.components(separatedBy: "\n")
+        VStack(alignment: .leading, spacing: 6) {
+            ForEach(lines.indices, id: \.self) { i in
+                let line = lines[i]
+                let trimmed = line.trimmingCharacters(in: .whitespaces)
+                let isContinuation = line.hasPrefix(" ") && !trimmed.isEmpty
+                Text(trimmed)
+                    .font(.system(.body, design: .rounded).weight(.semibold))
+                    .foregroundStyle(isContinuation ? Color.secondary : Color.primary)
+                    .padding(.leading, isContinuation ? 10 : 0)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
+        .padding(.vertical, 4)
+    }
+}
+
+/// Numbered badge + step text.
+private struct StepRow: View {
+    let number: Int
+    let text: String
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Text("\(number)")
+                .font(.caption2.weight(.bold))
+                .monospacedDigit()
+                .foregroundStyle(.black)
+                .frame(width: 18, height: 18)
+                .background(Circle().fill(Color.green))
+            Text(text)
+                .font(.body)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.vertical, 2)
     }
 }

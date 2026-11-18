@@ -6,21 +6,19 @@ struct TutorChoice: Codable, Hashable {
     let next: String
 }
 
-/// One watch screen in the decision tree (see tools/build_tree.py).
+/// One watch screen (see tools/build_tree.py).
 struct TutorNode: Codable, Identifiable {
     let id: String
     let title: String
     let tag: String?
-    let body: String?
-    /// Numbered procedure, revealed one step at a time.
-    let steps: [String]?
-    /// Worked example shown after the last step.
-    let outro: String?
     let formula: String?
+    let body: String?
+    let steps: [String]?
     let warn: String?
     let choices: [TutorChoice]?
-    let next: String?
-    let nextLabel: String?
+
+    /// A screen that is only a list of buttons (no content above them).
+    var isMenu: Bool { formula == nil && body == nil && steps == nil && warn == nil }
 }
 
 struct TutorGraph: Codable {
@@ -44,13 +42,17 @@ final class TutorStore: ObservableObject {
             rootID = "missing"
             nodes = [:]
         }
+        // Launch argument `-startNode <id>` opens a screen directly (used for screenshots).
+        if let start = UserDefaults.standard.string(forKey: "startNode"), nodes[start] != nil, start != rootID {
+            path = [start]
+        }
     }
 
     func node(_ id: String) -> TutorNode {
         nodes[id] ?? TutorNode(
-            id: id, title: "Missing screen", tag: nil,
+            id: id, title: "Missing screen", tag: nil, formula: nil,
             body: "Couldn't load '\(id)'. Make sure tutor.json is in the app target.",
-            steps: nil, outro: nil, formula: nil, warn: nil, choices: nil, next: nil, nextLabel: nil)
+            steps: nil, warn: nil, choices: nil)
     }
 
     func goHome() { path.removeAll() }

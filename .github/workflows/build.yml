@@ -71,3 +71,37 @@ jobs:
             -sdk watchsimulator \
             CODE_SIGNING_ALLOWED=NO | tee template.log | grep -E "error:|warning:|BUILD" || true
           grep -q "BUILD SUCCEEDED" template.log
+
+  watch-screenshots:
+    runs-on: macos-15
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, install on a watch simulator, screenshot screens
+        run: |
+          set -euo pipefail
+          xcodebuild build -project Calc3Tutor.xcodeproj -target Calc3Tutor -configuration Debug \
+            -sdk watchsimulator CODE_SIGNING_ALLOWED=NO -quiet
+          APP=build/Debug-watchsimulator/Calc3Tutor.app
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          d = json.load(sys.stdin)["devices"]
+          c = sorted((k, x["name"], x["udid"]) for k, v in d.items() if "watchOS" in k for x in v)
+          big = [t for t in c if "46mm" in t[1] or "45mm" in t[1]] or c
+          print(big[-1][2])')
+          echo "Device: $UDID"
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl install "$UDID" "$APP"
+          mkdir -p shots
+          for n in root t_polar t_sph_bounds t_green tr_trig exam_map; do
+            xcrun simctl terminate "$UDID" com.calc3tutor.watchkitapp 2>/dev/null || true
+            xcrun simctl launch "$UDID" com.calc3tutor.watchkitapp -startNode "$n"
+            sleep 6
+            xcrun simctl io "$UDID" screenshot "shots/$n.png"
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: watch-screenshots
+          path: shots/
