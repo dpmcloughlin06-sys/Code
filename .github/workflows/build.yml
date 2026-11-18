@@ -1,0 +1,43 @@
+name: Build watch app
+
+on:
+  push:
+    branches: [claude/calc3-watch-tutor-txzyvd, main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode version
+        run: xcodebuild -version
+
+      - name: Validate content
+        run: python3 tools/build_tree.py && git diff --exit-code Calc3Tutor/tutor.json
+
+      - name: Build for watchOS Simulator
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Calc3Tutor.xcodeproj -target Calc3Tutor -configuration Debug \
+            -sdk watchsimulator \
+            CODE_SIGNING_ALLOWED=NO | tee sim.log | grep -E "error:|warning:|BUILD" || true
+          grep -q "BUILD SUCCEEDED" sim.log
+
+      - name: Build for watchOS device (unsigned)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Calc3Tutor.xcodeproj -target Calc3Tutor -configuration Release \
+            -sdk watchos \
+            CODE_SIGNING_ALLOWED=NO | tee device.log | grep -E "error:|warning:|BUILD" || true
+          grep -q "BUILD SUCCEEDED" device.log
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: "*.log"
